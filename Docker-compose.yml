@@ -1,6 +1,6 @@
 version: '3'
 services:
-  web:
+  # web:
     backend:
       build: backend
       # command: ["python", "dbtest.py"] # Single run Container
