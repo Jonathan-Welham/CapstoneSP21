@@ -1,6 +1,6 @@
-build:
-  docker:
-    web: Docker-compose
+# build:
+#   docker:
+#     web: Docker-compose
 
-run: 
-  web: bundle exec puma -C config/puma.rb
+# run: 
+#   web: bundle exec puma -C config/puma.rb

@@ -1,14 +1,5 @@
 version: '3'
 services:
-  # web:
-  #   build: .
-  #   ports:
-  #     - "5000:5000"
-    # env_file: .env
-    # depends_on:
-    #   - backend
-    # volumes:
-    #   - ./webapp:/opt/webapp
   backend:
     build: backend
     # command: ["python", "dbtest.py"] # Single run Container
@@ -34,6 +25,16 @@ services:
     depends_on:
       - backend
 
-      # This volumes will change to a mysql db
+  # web:
+  #     build: .
+  #     ports:
+  #       - "5000:5000"
+  #     env_file: .env
+  #     depends_on:
+  #       - backend
+  #     volumes:
+  #       - ./webapp:/opt/webapp
+
+        # This volumes will change to a mysql db
 volumes:
   node-modules:
