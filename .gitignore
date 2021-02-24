@@ -578,7 +578,7 @@ __pycache__
 .#*
 .coverage
 .pytest_cache
-src
+# src
 
 *.swp
 *.map
