@@ -1,4 +1,4 @@
 build:
   docker:
     web: Docker-compose
-run: bundle exec puma -C config/puma.rb
+run: docker-compose up
