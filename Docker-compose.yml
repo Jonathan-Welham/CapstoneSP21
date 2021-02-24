@@ -1,31 +1,39 @@
 version: '3'
 services:
-  # web:
-    backend:
-      build: backend
-      # command: ["python", "dbtest.py"] # Single run Container
-      command: ["flask", "run"] # Persistent container
-      volumes:
-        - ./backend:/backend
-      environment:
-        - FLASK_ENV=development
-        - FLASK_APP=dbtest.py
-      ports:
-        - "5000:5000"
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    # env_file: .env
+    # depends_on:
+    #   - db
+    # volumes:
+    #   - ./webapp:/opt/webapp
+  backend:
+    build: backend
+    # command: ["python", "dbtest.py"] # Single run Container
+    command: ["flask", "run"] # Persistent container
+    volumes:
+      - ./backend:/backend
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=dbtest.py
+    ports:
+      - "5001:5001"
 
-    frontend:
-      build: frontend
-      command: ["npm", "start"]
-      volumes:
-        - ./frontend:/frontend
-        - node-modules:/frontend/node_modules
-      environment:
-        - NODE_ENV=development
-      ports:
-        - '3000:3000'
-      depends_on:
-        - backend
+  frontend:
+    build: frontend
+    command: ["npm", "start"]
+    volumes:
+      - ./frontend:/frontend
+      - node-modules:/frontend/node_modules
+    environment:
+      - NODE_ENV=development
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
 
-        # This volumes will change to a mysql db
+      # This volumes will change to a mysql db
 volumes:
   node-modules:

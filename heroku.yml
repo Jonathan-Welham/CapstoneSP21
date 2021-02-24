@@ -1,6 +1,6 @@
-build:
-  docker:
-    web: Docker-compose
+# build:
+#   docker:
+#     web: ./Docker-compose
 
-run: 
-  web: "docker-compose up"
+# run: 
+#   web: "docker-compose up"
