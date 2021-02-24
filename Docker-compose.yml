@@ -1,12 +1,12 @@
 version: '3'
 services:
-  web:
-    build: .
-    ports:
-      - "5000:5000"
+  # web:
+  #   build: .
+  #   ports:
+  #     - "5000:5000"
     # env_file: .env
     # depends_on:
-    #   - db
+    #   - backend
     # volumes:
     #   - ./webapp:/opt/webapp
   backend:
