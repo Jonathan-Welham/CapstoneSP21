@@ -4,5 +4,4 @@ build:
     frontend: frontend/Dockerfile
 
 run: 
-  web: bundle exec puma -C config/puma.rb
-  image: .
+  web: gunicorn app:app
