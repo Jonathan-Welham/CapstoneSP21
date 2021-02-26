@@ -1,14 +1,13 @@
+from flask import Flask, render_template
 import os
-
-from flask import Flask
-
-app = Flask(__name__)
-
+ 
+app = Flask(__name__, static_url_path='', static_folder='./build', template_folder='./build')
+ 
+ 
 @app.route('/')
 def hello():
-    return 'Hello world!'
-    # return app.send_static_file('index.html')
-
+    return render_template("index.html")
+ 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=False)
-    # app.run()
+    port = int(os.environ.get('PORT', 5000));
+    app.run(host='0.0.0.0', port=port)
