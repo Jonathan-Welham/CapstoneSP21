@@ -3,7 +3,9 @@ FROM node:15.10.0-alpine as build
 WORKDIR /app/frontend
 COPY ./frontend ./
 RUN npm install
+# RUN npm run server
 RUN npm run build
+# CMD ["npm start"]
 
 # Create the backend image 
 FROM python:3.7
