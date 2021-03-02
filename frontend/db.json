@@ -1,0 +1,24 @@
+{
+  "tests": [
+    {
+      "testId": 0,
+      "typeTest": "Selenium",
+      "status": "Pass"
+    },
+    {
+      "testId": 1,
+      "typeTest": "Redux",
+      "status": "Fail"
+    },
+    {
+      "testId": 2,
+      "typeTest": "push",
+      "status": "Pass"
+    },
+    {
+      "testId": 3,
+      "typeTest": "pull",
+      "status": "Fail"
+    }
+  ]
+}
