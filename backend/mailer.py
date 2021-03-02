@@ -13,32 +13,32 @@ NOTE: In order to send an email using a Python script
 
 class Mailer:
 	"""
-    A class used to send email
+	A class used to send email
 
-    ...
+	...
 
-    Attributes
-    ----------
-    Class variables...
-    MAIL_SERVER : str
-        a string used to define the mail server of origin
-    EMAIL_ADDRESS : str
-        the email address of the sender's email account
-    EMAIL_PASSWORD : str
-        the password of the sender's email account
+	Attributes
+	----------
+	Class variables...
+	MAIL_SERVER : str
+		a string used to define the mail server of origin
+	EMAIL_ADDRESS : str
+		the email address of the sender's email account
+	EMAIL_PASSWORD : str
+		the password of the sender's email account
 
-    Instance Variables...
-    message: instance of EmailMessage class
-    	an object containing email attributes such as the 
-    	subject, body, and attachments
+	Instance Variables...
+	message: instance of EmailMessage class
+		an object containing email attributes such as the 
+		subject, body, and attachments
 
-    Methods
-    -------
-    set_message(subject, body, attachments)
-        Manipulates user input into a plain text or html message
-    send(recepients)
-    	Sends message to a specified list of recepients
-    """
+	Methods
+	-------
+	set_message(subject, body, attachments)
+		Manipulates user input into a plain text or html message
+	send(recepients)
+		Sends message to a specified list of recepients
+	"""
 
 	MAIL_SERVER = os.environ.get('MAIL_SERVER')
 	EMAIL_ADDRESS = os.environ.get('EMAIL_ADDRESS')
@@ -51,13 +51,13 @@ class Mailer:
 		...
 
 		Parameters
-        ----------
-        subject : str
-            The subject of the email
-        body : str
-            The body of the email
-        attachments : list of str, optional
-            The path of image files to add as email attachments
+		----------
+		subject : str
+		    The subject of the email
+		body : str
+		    The body of the email
+		attachments : list of str, optional
+		    The path of image files to add as email attachments
 		"""
 
 		self.message = EmailMessage()
@@ -97,9 +97,9 @@ class Mailer:
 		...
 
 		Parameters
-        ----------
-        recepients : list of str
-            The subject of the email
+		----------
+		recepients : list of str
+		    The subject of the email
 		"""
 
 		self.message['To'] = ', '.join(recepients)
