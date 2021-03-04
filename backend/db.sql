@@ -23,5 +23,6 @@ CREATE TABLE Test(
 
     PRIMARY KEY (testID),
     FOREIGN KEY (appID) REFERENCES App (appID) ON DELETE CASCADE,
-    FOREIGN KEY (testTypeID) REFERENCES TestType (testTypeID) ON DELETE CASCADE 
+    FOREIGN KEY (testTypeID) REFERENCES TestType (testTypeID) ON DELETE CASCADE,
+    CONSTRAINT unique_testname UNIQUE (test)
 );
