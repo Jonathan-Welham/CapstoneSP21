@@ -1,4 +1,4 @@
-CREATE TABLE APP(
+CREATE TABLE App(
     appID INT NOT NULL AUTO_INCREMENT,
     app varchar(255),
 
@@ -20,6 +20,7 @@ CREATE TABLE Test(
     executionTime Float(10,3),
     entryDate DATE,
     testStatus varchar(64),
+    timesRun INT,
 
     PRIMARY KEY (testID),
     FOREIGN KEY (appID) REFERENCES App (appID) ON DELETE CASCADE,

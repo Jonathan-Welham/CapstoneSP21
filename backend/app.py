@@ -34,7 +34,7 @@ def test():
             data.append((None, app_ID, testType_ID, test['test'], test['executionTime'], test['result'], test['result']))
         
         # run an insert sql query, and insert the data
-        db.executemany("INSERT INTO Test VALUES(?,?,?,?,?,CURDATE(),?) ON DUPLICATE KEY UPDATE testStatus=?;", data)
+        db.executemany("INSERT INTO Test VALUES(?,?,?,?,?,CURDATE(),?,1) ON DUPLICATE KEY UPDATE testStatus=?, timesRun=timesRun + 1;", data)
     else:
         # send a 404 error on bad data requests
         abort(404)
