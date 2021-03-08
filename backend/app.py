@@ -4,10 +4,10 @@ from mailer import Mailer
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
+from models import db, User
 
-app = Flask(__name__, static_url_path='',
-            static_folder='./build', template_folder='./build')
 
+app = Flask(__name__, static_url_path='', static_folder='./build', template_folder='./build')
 
 # Flask SQLAlchemy Configuration...
 DB_USER = os.environ.get('DB_USER')
@@ -18,20 +18,8 @@ DB_DATABASE = os.environ.get('DB_DATABASE')
 #Connection URI Format: mysql+pymysql://username:password@host/dbname
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DATABASE}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db = DB()
-db = SQLAlchemy(app)
 
-# Adding a new table to test sqlalchemy, will be trashed later
-class User(db.Model):
-    _id = db.Column('id', db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    age = db.Column(db.Integer, nullable=False)
-
-    def __init__(self, name, email, age):
-        self.name = name
-        self.email = email
-        self.age = age
+db.init_app(app)
 
 @app.route('/add-user', methods=['POST'])
 def addUser():
@@ -125,6 +113,5 @@ def home():
 
 
 if __name__ == '__main__':
-    db.create_all()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
