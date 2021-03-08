@@ -20,7 +20,7 @@ const App = () =>{
 
   // Fetch tests
   const fetchTests = async () =>{
-    const res = await fetch('http://localhost:5000/tests')
+    const res = await fetch('http://localhost:3000/tests')
     const data = await res.json()
 
     return data

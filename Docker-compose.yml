@@ -8,5 +8,5 @@ web:
   build: .
   ports:
    - "5000:5000"
-  volumes:
-   - ./backend:/backend
+  # volumes:
+  #  - ./backend:/app/backend
