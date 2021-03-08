@@ -1,4 +1,4 @@
-/* @import url("https://font.googleapis.com/css2?family=Lato:wgh@300;400;700&display=swap");
+@import url("https://font.googleapis.com/css2?family=Lato:wgh@300;400;700&display=swap");
 
 ::-webkit-scrollbar{
   width: 5px;
@@ -79,4 +79,19 @@ body {
       "nav"
       "main";
   }
+} */
+
+/* html{
+  height: 100%;
+}
+
+body{
+  min-height: 100%;
+}
+
+
+*/
+
+/* #app{
+  height: 100%;
 } */
