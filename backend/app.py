@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, abort
-from flask import request as req
+from flask import request
 import os
 from db import DB
 
@@ -9,7 +9,7 @@ db = DB()
 @app.route('/api/test', methods = ['POST'])
 def test():
     if req.method == "POST":
-        body = req.json if req.content_type == "application/json" else req.form
+        body = request.json if request.content_type == "application/json" else request.form
         app_ID = None
         testType_ID = None
         data = []
