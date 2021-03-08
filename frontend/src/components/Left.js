@@ -4,12 +4,12 @@ import { Box, Button } from '@material-ui/core'
 
 class Left extends Component {
 
-    constructor(props){
-        super(props);
-        this.state = {
-            tests: []
-        };
-    }
+    // constructor(props){
+    //     super(props);
+    //     this.state = {
+    //         tests: []
+    //     };
+    // }
 
 
     // getSuiteOne() {
@@ -17,9 +17,9 @@ class Left extends Component {
     //     this.props.updateResult;
     // }
 
-    componentDidMount(){
-        this.setState(this.props.tests);
-    }
+    // componentDidMount(){
+    //     this.setState(this.props.tests);
+    // }
 
 
     // onclick => API Call depending on suite returns newData => this.setState(newData)
@@ -28,7 +28,7 @@ class Left extends Component {
         return (
             <Box display='flex' style={leftStyle} border={1}>
                 <Button>All</Button>
-                <Button onClick={() => this.updateResult}>Suite 1</Button>
+                <Button onClick={this.props.getResults}>Suite 1</Button>
                 <Button>Suite 2</Button>
                 <Button>Suite 3</Button>
                 <Button>Suite 4</Button>

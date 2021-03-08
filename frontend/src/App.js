@@ -11,6 +11,7 @@ import "./App.css"
 import Left from "./components/Left"
 import Right from "./components/Right"
 import { Box } from '@material-ui/core'
+// import axios from 'axios'
 
 class App extends Component{
 
@@ -27,7 +28,53 @@ class App extends Component{
         "tests": []
     };
 
+    this.getResults = this.getResults.bind(this);
+    
   }
+
+  getResults(){
+    this.setState(() => {
+      return {
+        'applicationUnderTest': "Selenium",
+        'tests': [
+          {
+            'testId': 44,
+            'testType': "test Suite n",
+            'test': "Should be able to Login and break everything",
+            'executionTime': 500,
+            'result': "fail"
+          }
+        ]
+      }
+    });
+      // GET test results for clicked suite
+
+  }
+    // const [tests, setTests] = useState([])
+
+    // useEffect(() => {
+    //   const getTests = async () =>{
+    //     const testsFromServer = await fetchTests()
+    //     setTests(testsFromServer)
+    //   }
+    //   getTests()
+    // }, [])
+
+
+    // // Fetch tests
+    // const fetchTests = async () =>{
+    //   const res = await fetch('http://localhost:3000/tests')
+    //   const data = await res.json()
+
+    //   return data
+    // }
+
+
+  // const fetchTests = async () => {
+  //   const res = await fetch("https://localhost:3000/tests")
+  //   const data = await res.json()
+  //   return data
+  // }
 
   componentDidMount(){
     // Once everything gets rendered this function gets called.
@@ -35,7 +82,18 @@ class App extends Component{
 
       console.log("componentDidMount");
 
+      // this.fetchTests().then(response => {
+      //   this.setState({
+      //     tests: response.tests
+      //   });
+      // });
+
       // TODO: Implement default GET * tests query
+      // axios.get('https://localhost:5000/')
+      // .then(res => {
+      //   const tests = res.data;
+      //   this.setState({ tests });
+      // })
 
       return this.setState({
         "applicationUnderTest": "Policy Center",
@@ -62,34 +120,19 @@ class App extends Component{
               "test": "should be able to create an account",
               "executionTime": 100,
               "result": "fail"
+            },
+            {
+              "testId": "uh",
+              "testType": "Test Type baby",
+              "test": "should be able to fly and talk to watermelons",
+              "executionTime": "5000 years",
+              "result": "ascension"
             }
         ]
     })
 
-    // const [tests, setTests] = useState([])
-
-    // useEffect(() => {
-    //   const getTests = async () =>{
-    //     const testsFromServer = await fetchTests()
-    //     setTests(testsFromServer)
-    //   }
-    //   getTests()
-    // }, [])
-
-
-    // // Fetch tests
-    // const fetchTests = async () =>{
-    //   const res = await fetch('http://localhost:3000/tests')
-    //   const data = await res.json()
-
-    //   return data
-    // }
 
     
-  }
-
-  bake(){
-    console.log("hello");
   }
 
 
@@ -103,7 +146,7 @@ render(){
     
     <div style={entityStyle}>
       <Box height={1} display="flex" border={1}>
-        <Left tests = {this.state} updateResults={() => this.bake()}/>
+        <Left getResults={this.getResults}/>
         <Right tests={this.state}/>
       </Box>
     </div>
