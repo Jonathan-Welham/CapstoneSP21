@@ -1,3 +1,5 @@
+// Unused. Using for code reference. Cannot comment out; get weird error. -Jon
+
 import PropTypes from 'prop-types'
 
 

@@ -1,9 +1,8 @@
-.container{
-    /* margin: 20px; */
-    padding: 5px;
+body{
+    margin: 0px;
 }
 
-.Table{
-    background-color: blue;
-    padding: 5px;
+
+html, body, #root{
+    height: 100%;
 }
