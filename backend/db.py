@@ -47,13 +47,14 @@ class DB:
 
                 res = cur.fetchall() if cur.description else ""
                 rowcount = cur.rowcount
+                lastrowid = cur.lastrowid
 
                 conn.commit()
                 conn.close()
 
                 if(res):
-                    return res, rowcount
-                return rowcount
+                    return rowcount, lastrowid, res
+                return rowcount, lastrowid
             except Exception as e:
                 print(f"error: {e}", flush=True)
 
