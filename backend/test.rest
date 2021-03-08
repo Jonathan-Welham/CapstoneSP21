@@ -1,0 +1,8 @@
+POST http://localhost:5000/add-user
+content-type: application/json
+
+{
+    "name": "Joseph Villegas 2",
+    "email": "jovillegas@csumb.edu",
+    "age": 21 
+}

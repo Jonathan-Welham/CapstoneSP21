@@ -2,10 +2,54 @@ import os
 from db import DB
 from mailer import Mailer
 from flask import Flask, render_template, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__, static_url_path='', static_folder='./build', template_folder='./build')
 
-db = DB()
+app = Flask(__name__, static_url_path='',
+            static_folder='./build', template_folder='./build')
+
+
+# Flask SQLAlchemy Configuration...
+DB_USER = os.environ.get('DB_USER')
+DB_PASSWORD = os.environ.get('DB_PASSWORD')
+DB_HOST = os.environ.get('DB_HOST')
+DB_DATABASE = os.environ.get('DB_DATABASE')
+
+#Connection URI Format: mysql+pymysql://username:password@host/dbname
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DATABASE}'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# db = DB()
+db = SQLAlchemy(app)
+
+# Adding a new table to test sqlalchemy, will be trashed later
+class User(db.Model):
+    _id = db.Column('id', db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, name, email, age):
+        self.name = name
+        self.email = email
+        self.age = age
+
+@app.route('/add-user', methods=['POST'])
+def addUser():
+    body = request.json
+    name, email, age = body['name'], body['email'], body['age']
+
+    try:
+        user = User.query.filter_by(email=email).first()
+        if user is not None:
+            return jsonify({'success': False, 'message': 'An account with that email is taken!'})
+
+        user = User(name, email, age)
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Account created!'})
+    except:
+        return jsonify({'success': False, 'message': 'Error registering for an account!'})
+
 
 @app.route('/api/test-get', methods=['GET'])
 def test_get():
@@ -17,18 +61,21 @@ def test_get():
     app_ID, test_type_ID = None, None
 
     if application_name is not None:
-        print(f'Searching for Application with Name: {application_name}', flush=True)
+        print(
+            f'Searching for Application with Name: {application_name}', flush=True)
 
-        query, values = "SELECT appID FROM App WHERE app = ?;", (application_name,)
+        query, values = "SELECT appID FROM App WHERE app = ?;", (
+            application_name,)
         query_results = db.execute(query, values)
         if query_results[0] == 0:
             return jsonify({'error': f'Invalid application_name: {application_name}'})
         app_ID = query_results[2][0][0]
-    
+
     if test_type is not None:
         print(f'Searching for Test Type with Name: {test_type}', flush=True)
 
-        query, values = "SELECT testTypeID FROM TestType WHERE testType = ?;", (test_type,)
+        query, values = "SELECT testTypeID FROM TestType WHERE testType = ?;", (
+            test_type,)
         query_results = db.execute(query, values)
         if query_results[0] == 0:
             return jsonify({'error': f'Invalid test_type: {test_type}'})
@@ -40,41 +87,44 @@ def test_get():
     if app_ID is not None:
         where.append(' appId = ?')
         values.append(app_ID)
-    
+
     if test_type_ID is not None:
         if len(where) == 0:
             where.append(' testTypeID = ?')
         else:
             where.append('AND testTypeID = ?')
         values.append(test_type_ID)
-    
+
     if status is not None:
         if len(where) == 0:
             where.append(' testStatus = ?')
         else:
             where.append('AND testStatus = ?')
         values.append(status)
-    
+
     if date is not None:
         if len(where) == 0:
             where.append(' entryDate = ?')
         else:
             where.append('AND entryDate = ?')
         values.append(date)
-    
+
     query = 'SELECT * FROM Test WHERE' + ', '.join(where)
     values = tuple(values)
-    
+
     print(f'Query: {query}\nValues: {values}', flush=True)
 
     query_results = db.execute(query, values)
 
     return jsonify({'query': query, 'values': values, 'query_results': query_results})
 
+
 @app.route('/')
 def home():
     return render_template("index.html")
 
+
 if __name__ == '__main__':
+    db.create_all()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
