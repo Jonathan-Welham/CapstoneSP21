@@ -2,7 +2,6 @@ from sqlalchemy import *
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-engine = create_engine(os.environ.get('DB_URI', ""))
 db = SQLAlchemy()
 
 class App(db.Model):

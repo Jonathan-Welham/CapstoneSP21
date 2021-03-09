@@ -5,6 +5,7 @@ web:
     - DB_HOST=$DB_HOST
     - DB_PORT=$DB_PORT
     - DB_DATABASE=$DB_DATABASE
+    - DB_URI:$DB_URI
   build: .
   ports:
    - "5000:5000"
