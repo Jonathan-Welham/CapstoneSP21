@@ -38,6 +38,25 @@ def addUser():
     except:
         return jsonify({'success': False, 'message': 'Error registering for an account!'})
 
+@app.route('/api/test-sqlalchemy-get', methods=['GET'])
+def test_sqlalchemy_get():
+    # Make a dictionary of attr. to filter by after validating keys from query
+    user_query_pairs = {key: value for key, value in request.args.items() if hasattr(User, key)}
+
+    try:
+        user = User.query.filter_by(**user_query_pairs).first()
+        if user is None:
+            return jsonify({'success': False, 'message': 'No matching account found!'})
+
+        user = dict(
+            name = user.name,
+            email = user.email,
+            age = user.age
+        )
+
+        return jsonify(user)
+    except:
+        return jsonify({'success': False, 'message': 'Error processing query!'})
 
 @app.route('/api/test-get', methods=['GET'])
 def test_get():

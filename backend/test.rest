@@ -6,3 +6,6 @@ content-type: application/json
     "email": "jovillegas@csumb.edu",
     "age": 21 
 }
+###
+GET http://localhost:5000/api/test-sqlalchemy-get?name=Joseph%20Villegas&email=jovillegas@csumb.edu&age=21&test=hey
+content-type: application/json
