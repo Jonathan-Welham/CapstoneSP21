@@ -1,29 +1,29 @@
 CREATE TABLE App(
-    appID INT NOT NULL AUTO_INCREMENT,
+    app_id INT NOT NULL AUTO_INCREMENT,
     app varchar(255),
 
-    PRIMARY KEY (appID)
+    PRIMARY KEY (app_id)
 );
 
-CREATE TABLE TestType(
-    testTypeID INT NOT NULL AUTO_INCREMENT,
-    testType varchar(64),
+CREATE TABLE Test_Type(
+    test_type_id INT NOT NULL AUTO_INCREMENT,
+    test_type varchar(64),
 
-    PRIMARY KEY (testTypeID)
+    PRIMARY KEY (test_type_id)
 );
 
 CREATE TABLE Test(
-    testID INT NOT NULL AUTO_INCREMENT,
-    appID INT NOT NULL,
-    testTypeID INT NOT NULL,
+    test_id INT NOT NULL AUTO_INCREMENT,
+    app_id INT NOT NULL,
+    test_type_id INT NOT NULL,
     test varchar(255),
-    executionTime Float(10,3),
-    entryDate DATE,
-    testStatus varchar(64),
-    timesRun INT,
+    execution_time Float(10,3),
+    entry_date DATE,
+    test_status varchar(64),
+    times_run INT,
 
-    PRIMARY KEY (testID),
-    FOREIGN KEY (appID) REFERENCES App (appID) ON DELETE CASCADE,
-    FOREIGN KEY (testTypeID) REFERENCES TestType (testTypeID) ON DELETE CASCADE,
+    PRIMARY KEY (test_id),
+    FOREIGN KEY (app_id) REFERENCES App (app_id) ON DELETE CASCADE,
+    FOREIGN KEY (test_type_id) REFERENCES Test_Type (test_type_id) ON DELETE CASCADE,
     CONSTRAINT unique_testname UNIQUE (test)
 );

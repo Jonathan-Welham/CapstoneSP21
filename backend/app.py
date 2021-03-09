@@ -1,10 +1,16 @@
 import os
 from db import DB
 from mailer import Mailer
+from datetime import date
 from flask import Flask, render_template, request, jsonify, abort
+from models import db as dB # remove 'as dB' once routes are converted to using sqlalchemy for database interaction
+from models import App, Test, Test_Type
 
 app = Flask(__name__, static_url_path='', static_folder='./build', template_folder='./build')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', "")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = DB()
+dB.init_app(app) # replace with db.init_app(app) once converted to using sqlalchemy
 
 @app.route('/api/test', methods = ['POST'])
 def test_post():
@@ -43,6 +49,7 @@ def test_post():
 @app.route('/api/test-get', methods=['GET'])
 def test_get():
     application_name = request.args['application_name'] if 'application_name' in request.args else None
+    print(f"args: {request.args}")
     test_type = request.args['test_type'] if 'test_type' in request.args else None
     status = request.args['status'] if 'status' in request.args else None
     date = request.args['date'] if 'date' in request.args else None
