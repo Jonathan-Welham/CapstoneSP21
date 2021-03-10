@@ -57,6 +57,13 @@ def test_post():
 
 @app.route('/api/query-tests', methods=['GET'])
 def get_tests():
+    # Query tests without any filters
+    apply_filters = request.args['apply_filters'] if 'apply_filters' in request.args else False
+    if not apply_filters:
+        tests = Test.query.all()
+        query_results = list(map(lambda test: {c.name: getattr(test, c.name) for c in test.__table__.columns}, tests))
+        return jsonify({'success': True, 'message': 'Query processed', 'query_results': query_results})
+       
     # Make a dictionary of attr. to filter tests by after validating keys from query
     test_query_pairs = {key: value for key, value in request.args.items() if hasattr(Test, key)}
     """ 
