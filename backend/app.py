@@ -3,52 +3,53 @@ from db import DB
 from mailer import Mailer
 from datetime import date
 from flask import Flask, render_template, request, jsonify, abort
-# remove 'as dB' once routes are converted to using sqlalchemy for database interaction
-from models import db as dB
+from models import db
 from models import App, Test, Test_Type
 
 app = Flask(__name__, static_url_path='', static_folder='./build', template_folder='./build')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', "")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = DB()
-# replace with db.init_app(app) once converted to using sqlalchemy
-dB.init_app(app)
+
+db.init_app(app)
 
 @app.route('/api/test', methods=['POST'])
 def test_post():
-    if req.method == "POST":
+    if request.method == "POST":
         body = request.json if request.content_type == "application/json" else request.form
-        app_ID = None
-        testType_ID = None
+        app_id = None
+        test_type_id = None
         data = []
 
-        # Get appID, insert app into db if it is not already in there
-        app_info = db.execute(
-            "SELECT * FROM App WHERE app=?;", (body['application'],))
-        if(app_info[0] != 0):
-            app_ID = app_info[2][0][0]
+        # Grab the app id if the app is already in the db, or add it to the db and get its id
+        app_info = App.query.filter_by(app=body['application']).first()
+        if(app_info.app):
+            app_id = app_info.app_id
         else:
-            app_ID = db.execute("INSERT INTO App VALUES(?,?);",
-                                (None, body['application']))[1]
+            app_info = App(body['application'])
+            db.session.add(app_info)
+            db.session.flush()
+            app_id = app_info.app_id
 
-        # Get testTypeID, insert testType into db if it is not already in there
-        testType_info = db.execute(
-            "SELECT * FROM TestType WHERE testType=?;", (body['testType'],))
-        if(testType_info[0] != 0):
-            testType_ID = testType_info[2][0][0]
+        # Grab the id for test type if it is already in the db, or add the test type and get its id
+        test_type_info = Test_Type.query.filter_by(test_type=body['test_type']).first()
+        if(test_type_info.test_type):
+            test_type_id = test_type_id
         else:
-            testType_ID = db.execute(
-                "INSERT INTO TestType VALUES(?,?);", (None, body['testType']))[1]
+            test_type_info = Test_Type(body['test_type'])
+            db.session.add(test_type_info)
+            db.session.flush()
+            test_type_id = test_type_info.test_type_id
 
-        # format the tests into an array of tuples to prepare them for insert into the db
+        # for every test in the json add it to the database.  If it is already in the database instead of adding it update it
         tests = body['tests']
         for test in tests:
-            data.append((None, app_ID, testType_ID,
-                         test['test'], test['executionTime'], test['result'], test['result']))
+            affected_row = Test.query.filter_by(test=test['test']).update({'execution_time': test['execution_time'], 'test_status': test['result'], 'times_run': (Test.times_run + 1)})
 
-        # run an insert sql query, and insert the data
-        db.executemany(
-            "INSERT INTO Test VALUES(?,?,?,?,?,CURDATE(),?,1) ON DUPLICATE KEY UPDATE testStatus=?, timesRun=timesRun + 1;", data)
+            if(affected_row < 1):
+                temp_test = Test(app_id, test_type_id, test['test'], test['execution_time'], date.today(), test['result'])
+                db.session.add(temp_test)
+
+        db.session.commit()
     else:
         # send a 404 error on bad data requests
         abort(404)
