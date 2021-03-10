@@ -1,3 +1,6 @@
 flask
 # gunicorn
 mariadb
+sqlalchemy
+PyMySQL
+flask_sqlalchemy
