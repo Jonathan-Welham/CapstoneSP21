@@ -5,54 +5,11 @@ import { Table, TableBody, TableCell, TableContainer, TableRow, TableHead } from
 // import { IconButton, FirstPageIcon, KeyboardArrowLeft, KeyboardArrowRight, LastPageIcon } from '@material-ui/icons'
 
 
-// function createData(testId, test, testType, executionTime, result){
-//     return { testId, test, testType, executionTime, result  };
-// }
-
-// const tests = [
-//     createData(this.props.testId, this.props.test, this.props.testType, this.props.executionTime, this.props.result);
-// ]
-
 class Right extends Component{
 
-    // const tests = setState(this.props);
-
-    // state = {
-    //     applicationUnderTest: "",
-    //     tests: []
-    // };
-
-    // constructor(props){
-    //     // What does super(props) do?
-    //     super(props);    
-    //     this.state = {
-    //         applicationUnderTest: "",
-    //         tests: []
-    //     };
-    //     console.log("constructor");
-    //     console.log(this.state);
-    // }
-
-
-
-    // // const tests = const [state, setstate] = useState(initialState)
-
-
-
-    // componentDidMount(){
-    //     // this.setState(this.props.tests);
-    //     console.log("componentDidMount");
-    //     console.log("this.props.tests");
-    //     console.log(this.props.tests);
-    //     console.log("this.state");
-    //     console.log(this.state);
-    //     console.log("this.state.tests");
-    //     console.log(this.props.tests);
-    // };
 
     render(){
 
-        // const tests = this.state;
 
         return (
 
@@ -121,14 +78,6 @@ class Right extends Component{
                         </Paper>
                     </Grid>
                 </Grid>
-                {/* <Grid>
-                        <item 1-n
-                            1 - Graph
-                            2 - Graph
-                            3 - Graph
-                            4 - Data table
-                            5 - Graph
-                    </Grid> */}
             </Box>
         )
     }
@@ -138,11 +87,7 @@ class Right extends Component{
 const rightStyle = {
     height: "100%",
     backgroundColor: "teal",
-    // color: "red",
     flex: '6',
-    // alignItems: 'center',
-    // width: '100%'
-    // justifyContent: 'center',
 }
 
 export default Right
