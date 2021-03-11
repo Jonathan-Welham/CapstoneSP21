@@ -1,5 +1,4 @@
 import os
-from db import DB
 from mailer import Mailer
 from datetime import date
 from flask import Flask, render_template, request, jsonify, abort
@@ -20,9 +19,13 @@ def test_post():
         test_type_id = None
         data = []
 
+        # Checks that app info was given in the body
+        if(not ('application' in body) or not body['application']):
+            return jsonify({'success': False, 'message': "No application given"}), 404
+
         # Grab the app id if the app is already in the db, or add it to the db and get its id
         app_info = App.query.filter_by(app=body['application']).first()
-        if(app_info.app):
+        if(app_info):
             app_id = app_info.app_id
         else:
             app_info = App(body['application'])
@@ -30,9 +33,13 @@ def test_post():
             db.session.flush()
             app_id = app_info.app_id
 
+        # checks that a test type was given in the body
+        if(not ('test_type' in body) or not body['test_type']):
+            return jsonify({'success': False, 'message': "No test_type given"}), 404
+
         # Grab the id for test type if it is already in the db, or add the test type and get its id
         test_type_info = Test_Type.query.filter_by(test_type=body['test_type']).first()
-        if(test_type_info.test_type):
+        if(test_type_info):
             test_type_id = test_type_id
         else:
             test_type_info = Test_Type(body['test_type'])
@@ -43,8 +50,14 @@ def test_post():
         # for every test in the json add it to the database.  If it is already in the database instead of adding it update it
         tests = body['tests']
         for test in tests:
-            affected_row = Test.query.filter_by(test=test['test']).update({'execution_time': test['execution_time'], 'test_status': test['result'], 'times_run': (Test.times_run + 1)})
+            if(not ('test' in test) or not test['test']):
+                continue
 
+            test_name = test['test'] 
+            execution_time = test['execution_time'] if 'execution_time' in test and test['execution_time'] else None
+            test_status = test['result'] if 'result' in test and test['result'] else None
+
+            affected_row = Test.query.filter_by(test=test_name).update({'execution_time': execution_time, 'test_status': test_status, 'times_run': (Test.times_run + 1)})
             if(affected_row < 1):
                 temp_test = Test(app_id, test_type_id, test['test'], test['execution_time'], date.today(), test['result'])
                 db.session.add(temp_test)
@@ -53,7 +66,7 @@ def test_post():
     else:
         # send a 404 error on bad data requests
         abort(404)
-    return "", 200
+    return jsonify({"success": True, "message": "tests have been logged"}), 200
 
 
 @app.route('/api/query-tests', methods=['GET'])
