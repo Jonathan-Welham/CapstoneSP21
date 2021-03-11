@@ -11,7 +11,7 @@ import "./App.css"
 import Left from "./components/Left"
 import Right from "./components/Right"
 import { Box } from '@material-ui/core'
-// import axios from 'axios'
+import axios from 'axios'
 
 class App extends Component{
 
@@ -22,8 +22,8 @@ class App extends Component{
 
     this.state = {
         "allApplications": [],
-        "applicationUnderTest": "applicationUnderTest",
-        "testType": "testType",
+        "applicationUnderTest": "",
+        "testType": "",
         "totalExecutionTime": "",
         "tests": []
     };
@@ -32,8 +32,22 @@ class App extends Component{
     
   }
 
-  getResults(){
+  // GET test results for clicked suite
+  getResults(e){
+    // e.preventDefault();
+    console.log(e.target.innerHTML);
+
+    
+    // axios.get('/api/query-tests?apply_filters=false')
+    // .then(res => {
+    //   const data = res.data;
+    //   console.log(data.query_results);
+    //   this.setState({ 'tests': data.query_results });
+    // })
+
+
     this.setState(() => {
+      
       return {
         'applicationUnderTest': "Selenium",
         'tests': [
@@ -47,7 +61,8 @@ class App extends Component{
         ]
       }
     });
-      // GET test results for clicked suite
+
+
 
   }
     // const [tests, setTests] = useState([])
@@ -89,13 +104,23 @@ class App extends Component{
       // });
 
       // TODO: Implement default GET * tests query
-      // axios.get('https://localhost:5000/')
-      // .then(res => {
-      //   const tests = res.data;
-      //   this.setState({ tests });
-      // })
+
+
+      
+
+
+
+
 
       return this.setState({
+        "allApplications": [
+          {
+            "name": "Policy Center",
+          },
+          {
+            "name": "Administration"
+          },
+        ],
         "applicationUnderTest": "Policy Center",
         "testType": "Selenium",
         "executionTime": 300,
@@ -146,7 +171,7 @@ render(){
     
     <div style={entityStyle}>
       <Box height={1} display="flex" border={1}>
-        <Left getResults={this.getResults}/>
+        <Left tests={this.state.allApplications} getResults={this.getResults}/>
         <Right tests={this.state}/>
       </Box>
     </div>

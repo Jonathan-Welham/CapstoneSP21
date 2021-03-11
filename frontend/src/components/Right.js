@@ -99,15 +99,15 @@ class Right extends Component{
                                 </TableHead>
                                 <TableBody>
                                     {this.props.tests.tests.map((test) => (
-                                        <TableRow key={test.testId}>
+                                        <TableRow key={test.app_id}>
                                             <TableCell component="th" scope="test">
-                                                {test.testId}
+                                                {test.app_id}
                                             </TableCell>
                                             <TableCell align="right">{this.props.tests.applicationUnderTest}</TableCell>
                                             <TableCell align="right">{test.testType}</TableCell>
                                             <TableCell align="right">{test.test} </TableCell>
                                             <TableCell align="right">{test.executionTime} </TableCell>                                
-                                            <TableCell align="right">{test.result} </TableCell>                                            
+                                            <TableCell align="right">{test.result} </TableCell>                                             
                                         </TableRow>
                                     ))}                                    
                                 </TableBody>

@@ -18,21 +18,21 @@ class Left extends Component {
     // }
 
     // componentDidMount(){
-    //     this.setState(this.props.tests);
+    //     this.setState(this.props.all);
     // }
 
 
     // onclick => API Call depending on suite returns newData => this.setState(newData)
 
     render(){
+      
         return (
             <Box display='flex' style={leftStyle} border={1}>
-                <Button>All</Button>
-                <Button onClick={this.props.getResults}>Suite 1</Button>
-                <Button>Suite 2</Button>
-                <Button>Suite 3</Button>
-                <Button>Suite 4</Button>
-                <Button>Suite 5</Button>
+                {/* Buttons will be dynamically created for how many applications there are */}
+                {this.props.tests.map((name) => (
+                    <Button key={name.name} onClick={this.props.getResults}>{name.name}</Button>
+                    // <Button key={name.name}></Button>
+                ))}
             </Box>
 
         )
