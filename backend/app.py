@@ -11,8 +11,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-@app.route('/api/test', methods=['POST'])
-def test_post():
+@app.route('/api/post-tests', methods=['POST'])
+def post_tests():
     if request.method == "POST":
         body = request.json if request.content_type == "application/json" else request.form
         app_id = None
@@ -49,24 +49,33 @@ def test_post():
 
         # for every test in the json add it to the database.  If it is already in the database instead of adding it update it
         tests = body['tests']
+        tests_badly_formatted = []
+        tests_total = 0
+        tests_entered = 0
         for test in tests:
+            # if not in proper format do not add to database, and sendback its formatted wrong
+            tests_total = tests_total + 1
             if(not ('test' in test) or not test['test']):
+                tests_badly_formatted.append(test)
                 continue
 
             test_name = test['test'] 
             execution_time = test['execution_time'] if 'execution_time' in test and test['execution_time'] else None
             test_status = test['result'] if 'result' in test and test['result'] else None
 
-            affected_row = Test.query.filter_by(test=test_name).update({'execution_time': execution_time, 'test_status': test_status, 'times_run': (Test.times_run + 1)})
+            affected_row = Test.query.filter_by(test=test_name).update({'execution_time': execution_time, 'test_status': test_status, 'times_run': (Test.times_run + 1), 'entry_date': date.today()})
             if(affected_row < 1):
                 temp_test = Test(app_id, test_type_id, test['test'], test['execution_time'], date.today(), test['result'])
                 db.session.add(temp_test)
-
+            tests_entered = tests_entered + 1
         db.session.commit()
     else:
         # send a 404 error on bad data requests
         abort(404)
-    return jsonify({"success": True, "message": "tests have been logged"}), 200
+
+    if(len(tests_badly_formatted) > 0):
+        return jsonify({"success": True, "message": f"{tests_entered} tests have been logged out of {tests_total}", "tests_badly_formatted": tests_badly_formatted}), 200
+    return jsonify({"success": True, "message": f"{tests_entered} tests have been logged out of {tests_total}"}), 200
 
 
 @app.route('/api/query-tests', methods=['GET'])
