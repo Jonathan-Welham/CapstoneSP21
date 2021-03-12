@@ -4,35 +4,15 @@ import { Box, Button } from '@material-ui/core'
 
 class Left extends Component {
 
-    // constructor(props){
-    //     super(props);
-    //     this.state = {
-    //         tests: []
-    //     };
-    // }
-
-
-    // getSuiteOne() {
-    //     // GET suiteOne specific results
-    //     this.props.updateResult;
-    // }
-
-    // componentDidMount(){
-    //     this.setState(this.props.tests);
-    // }
-
-
-    // onclick => API Call depending on suite returns newData => this.setState(newData)
 
     render(){
+      
         return (
             <Box display='flex' style={leftStyle} border={1}>
-                <Button>All</Button>
-                <Button onClick={this.props.getResults}>Suite 1</Button>
-                <Button>Suite 2</Button>
-                <Button>Suite 3</Button>
-                <Button>Suite 4</Button>
-                <Button>Suite 5</Button>
+                {/* Buttons will be dynamically created for how many applications there are */}
+                {this.props.apps.map((app) => (
+                    <Button key={app.app} onClick={this.props.getResults}>{app.app}</Button>
+                ))}
             </Box>
 
         )
@@ -41,11 +21,9 @@ class Left extends Component {
 
 const leftStyle = {
     backgroundColor: "royalblue",
-    // alignItems: "stretch",
     flex: '1',
     flexDirection: 'column',
     justifyContent: "center",
-    // justifyContent: "space-around",
 }
 
 export default Left
