@@ -19,7 +19,6 @@ class App extends Component{
         "tests": []
     };
     this.getResults = this.getResults.bind(this);
-    
   }
 
 
@@ -29,27 +28,29 @@ class App extends Component{
 
     console.log(e.target.innerHTML);
 
-    // axios.get('/api/query-tests?apply_filters=false')
-    // .then(res => {
-    //   const data = res.data;
-    //   console.log(data.query_results);
-    //   this.setState({ 'tests': data.query_results });
-    // })
+    const temp = e.target.innerHTML;
 
-    this.setState(() => {
-      return {
-        'applicationUnderTest': "Selenium",
-        'tests': [
-          {
-            'testId': 44,
-            'testType': "test Suite n",
-            'test': "Should be able to Login and break everything",
-            'executionTime': 500,
-            'result': "fail"
-          }
-        ]
-      }
-    });
+    axios.get('/api/query-tests?apply_filters=true&app=' + temp)
+    .then(res => {
+      const data = res.data;
+      console.log(data);
+      this.setState({ 'tests': data.query_results });
+    })
+
+    // this.setState(() => {
+    //   return {
+    //     'applicationUnderTest': "Selenium",
+    //     'tests': [
+    //       {
+    //         'testId': 44,
+    //         'testType': "test Suite n",
+    //         'test': "Should be able to Login and break everything",
+    //         'executionTime': 500,
+    //         'result': "fail"
+    //       }
+    //     ]
+    //   }
+    // });
 
   }
 
@@ -58,50 +59,14 @@ class App extends Component{
 
     // This function should call all tests for display on the table
 
-      return this.setState({
-        "allApplications": [
-          {
-            "name": "Policy Center",
-          },
-          {
-            "name": "Administration"
-          },
-        ],
-        "applicationUnderTest": "Policy Center",
-        "testType": "Selenium",
-        "executionTime": 300,
-        "tests": [
-            {
-              "testId": 1,
-              "testType": "Selenium",
-              "test": "should be able to log in",
-              "executionTime": 150,
-              "result": "pass"
-            },
-            {
-              "testId": 2,
-              "testType": "Travis",
-              "test": "should be able to create a policy",
-              "executionTime": 50,
-              "result": "pass"
-            }, 
-            {
-              "testId": 3,
-              "testType": "Jenkins",
-              "test": "should be able to create an account",
-              "executionTime": 100,
-              "result": "fail"
-            },
-            {
-              "testId": "uh",
-              "testType": "Test Type baby",
-              "test": "should be able to fly and talk to watermelons",
-              "executionTime": "5000 years",
-              "result": "ascension"
-            }
-        ]
+    axios.get('/api/get-apps')
+    .then(res => {
+      const apps = res.data;
+      console.log(res);
+      this.setState({
+        "allApplications": apps,
+      });
     })
-
 
     
   }
@@ -111,7 +76,7 @@ render(){
   return (
     <div style={entityStyle}>
       <Box height={1} display="flex" border={1}>
-        <Left tests={this.state.allApplications} getResults={this.getResults}/>
+        <Left apps={this.state.allApplications} getResults={this.getResults}/>
         <Right tests={this.state}/>
       </Box>
     </div>
