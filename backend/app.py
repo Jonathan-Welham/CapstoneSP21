@@ -134,7 +134,18 @@ def get_tests():
         return jsonify({'success': True, 'message': 'Query processed', 'query_results': query_results})
     except:
         return jsonify({'success': False, 'message': 'Error processing query'})
-    
+
+@app.route('/api/get-apps', methods=['GET'])
+def get_apps():
+    if request.method == "GET":
+        output = []
+        for app in db.session.query(App.app).all():
+            output.append({"app" : app[0]})
+
+        return jsonify(output), 200
+    else:
+        abort(404)
+
 @app.route('/')
 def home():
     return render_template("index.html")
