@@ -77,15 +77,17 @@ def post_tests():
         return jsonify({"success": True, "message": f"{tests_entered} tests have been logged out of {tests_total}", "tests_badly_formatted": tests_badly_formatted}), 200
     return jsonify({"success": True, "message": f"{tests_entered} tests have been logged out of {tests_total}"}), 200
 
-
 @app.route('/api/query-tests', methods=['GET'])
 def get_tests():
     # Query tests without any filters
     apply_filters = request.args['apply_filters'] if 'apply_filters' in request.args else False
     if not apply_filters:
-        tests = Test.query.all()
-        query_results = list(map(lambda test: {c.name: getattr(test, c.name) for c in test.__table__.columns}, tests))
-        return jsonify({'success': True, 'message': 'Query processed', 'query_results': query_results})
+        try:
+            raw_results = db.session.query(Test, App, Test_Type).select_from(Test).join(App).join(Test_Type).all()
+            query_results = list(map(lambda result: {**{'app': result[1].app, 'test_type': result[2].test_type}, **{c.name: str(getattr(result[0], c.name)) for c in result[0].__table__.columns}}, raw_results))
+            return jsonify({'success': True, 'message': 'Query processed', 'query_results': query_results})
+        except:
+            return jsonify({'success': False, 'message': 'Error processing query'})
        
     # Make a dictionary of attr. to filter tests by after validating keys from query
     test_query_pairs = {key: value for key, value in request.args.items() if hasattr(Test, key)}
@@ -127,10 +129,10 @@ def get_tests():
         except:
             return jsonify({'success': False, 'message': f'Error processing query searching for test type with matching name: {test_type}'})
     
-    # Get tests using all processed filters, TODO: Figure out how to compute joins to also include app names and test type names
+    # Get tests using all processed filters
     try:
-        tests = Test.query.filter_by(**test_query_pairs).all()
-        query_results = list(map(lambda test: {c.name: getattr(test, c.name) for c in test.__table__.columns}, tests))
+        raw_results = db.session.query(Test, App, Test_Type).select_from(Test).filter_by(**test_query_pairs).join(App).join(Test_Type).all()
+        query_results = list(map(lambda result: {**{'app': result[1].app, 'test_type': result[2].test_type}, **{c.name: str(getattr(result[0], c.name)) for c in result[0].__table__.columns}}, raw_results))
         return jsonify({'success': True, 'message': 'Query processed', 'query_results': query_results})
     except:
         return jsonify({'success': False, 'message': 'Error processing query'})
