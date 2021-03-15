@@ -135,16 +135,43 @@ def get_tests():
     except:
         return jsonify({'success': False, 'message': 'Error processing query'})
 
-@app.route('/api/get-apps', methods=['GET'])
-def get_apps():
+@app.route('/api/get-dashboard-info', methods=['GET'])
+def get_dashboard_info():
     if request.method == "GET":
-        output = []
-        for app in db.session.query(App.app).all():
-            output.append({"app" : app[0]})
+        apps = get_apps()
+        recent_tests = get_recent_tests()
+
+        output = {}
+        if(apps[0]):
+            output["apps"] = apps[1]
+        if(recent_tests[0]):
+            output["tests"] = recent_tests[1]
 
         return jsonify(output), 200
     else:
         abort(404)
+
+# returns the names of all apps
+def get_apps():
+    try:
+        output = []
+        for app in db.session.query(App.app).all():
+            output.append({"app" : app[0]})
+        
+        return (True, output)
+    except:
+        return (False,)
+
+# returns the most recent rows of tests as a tuple containing test id, app name, test type, test, execution time,
+# entry date, test status, and times run in this order.
+def get_recent_tests():
+    args = (Test.test_id, App.app, Test_Type.test_type, Test.test, Test.execution_time,
+            Test.entry_date, Test.test_status, Test.times_run)
+        
+    try:
+        return (True, db.session.query(*args).join(App).join(Test_Type).order_by(Test.entry_date).limit(50).all())
+    except:
+        return (False,)
 
 @app.route('/')
 def home():
