@@ -50,5 +50,5 @@ class Test(db.Model):
         self.times_run = 1
 
     def __str__(self):
-        return "{" + f"test: {self.test}\n test_id: {self.test_id}\n app_id: {self.app_id}\n test_type_id: {test_type_ID}\n "
+        return "{" + f"test: {self.test}\n test_id: {self.test_id}\n app_id: {self.app_id}\n test_type_id: {self.test_type_id}\n "
         + f"execution_time: {self.execution_time}\n entry_date: {self.entry_date}\n test_status: {self.test_status}" + "}"
