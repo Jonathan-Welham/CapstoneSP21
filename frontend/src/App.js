@@ -37,20 +37,6 @@ class App extends Component{
       this.setState({ 'tests': data.query_results });
     })
 
-    // this.setState(() => {
-    //   return {
-    //     'applicationUnderTest': "Selenium",
-    //     'tests': [
-    //       {
-    //         'testId': 44,
-    //         'testType': "test Suite n",
-    //         'test': "Should be able to Login and break everything",
-    //         'executionTime': 500,
-    //         'result': "fail"
-    //       }
-    //     ]
-    //   }
-    // });
 
   }
 
@@ -59,18 +45,17 @@ class App extends Component{
 
     // This function should call all tests for display on the table
 
-    axios.get('/api/get-apps')
+    axios.get('/api/get-dashboard-info')
     .then(res => {
-      const apps = res.data;
       console.log(res);
+      const apps = res.data.apps;
+      const tests = res.data.tests
       this.setState({
         "allApplications": apps,
+        "tests": tests
       });
     })
-
-    
   }
-
 
 render(){
   return (

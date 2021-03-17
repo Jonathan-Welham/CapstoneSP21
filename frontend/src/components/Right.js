@@ -10,7 +10,6 @@ class Right extends Component{
 
     render(){
 
-
         return (
 
             <Box display='flex' style={rightStyle} border={1}>
