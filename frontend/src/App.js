@@ -75,8 +75,10 @@ class App extends Component{
 render(){
   return (
     <div style={entityStyle}>
-      <Box height={1} display="flex" border={1}>
+      <Box className="left-box">
         <Left apps={this.state.allApplications} getResults={this.getResults}/>
+      </Box>
+      <Box height={1} display="flex">
         <Right tests={this.state}/>
       </Box>
     </div>
@@ -85,7 +87,7 @@ render(){
 
 const entityStyle = {
   height: "100%",
-  backgroundColor: 'black'
+  //backgroundColor: 'black'
 }
 
 
