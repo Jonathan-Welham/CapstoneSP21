@@ -164,15 +164,28 @@ def get_apps():
     except:
         return (False,)
 
-# returns the most recent rows of tests as a tuple containing test id, app name, test type, test, execution time,
+# returns the most recent rows of tests as an array of jsons containing test id, app name, test type, test, execution time,
 # entry date, test status, and times run in this order.
 def get_recent_tests():
     args = (Test.test_id, App.app, Test_Type.test_type, Test.test, Test.execution_time,
             Test.entry_date, Test.test_status, Test.times_run)
-        
+    args_to_string = ["test_id", "app", "test_type", "test", "execution_time", "entry_date", "test_status", "times_run"]
+
     try:
-        return (True, db.session.query(*args).join(App).join(Test_Type).order_by(Test.entry_date).limit(50).all())
-    except:
+        tests = db.session.query(*args).join(App).join(Test_Type).order_by(Test.entry_date).limit(50).all()
+        output = []
+
+        # convert tests from an array format to an array of jsons
+        for test in tests:
+            temp = {}
+            for n in range(0, len(test)):
+                temp[args_to_string[n]] = test[n]
+
+            output.append(temp)
+
+        return (True, output)
+    except Exception as e:
+        print(f"error: {e}", flush=True)
         return (False,)
 
 @app.route('/')
