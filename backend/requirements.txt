@@ -1,6 +1,6 @@
 flask
 # gunicorn
 mariadb
-sqlalchemy
+SQLAlchemy<1.4
 PyMySQL
 flask_sqlalchemy
