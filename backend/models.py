@@ -2,7 +2,7 @@ from sqlalchemy import *
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-db = SQLAlchemy()
+db = SQLAlchemy(session_options={"autoflush": False})
 
 class App(db.Model):
     __tablename__ = 'App'
@@ -38,6 +38,11 @@ class Test(db.Model):
     entry_date = Column('entry_date', Date)
     test_status = Column('test_status', String(64))
     times_run = Column('times_run', INT)
+
+    __table_args__ = (
+        # this can be db.PrimaryKeyConstraint if you want it to be a primary key
+        db.UniqueConstraint('test', 'app_id', name='unique_testname'),
+    )
 
     def __init__(self, app_id, test_type_id, test, execution_time, entry_date, test_status):
         self.test_id = None
