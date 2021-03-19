@@ -14,27 +14,17 @@ class App extends Component{
     console.log("App: Constructor");
     this.state = {
         "allApplications": [],
-        "applicationUnderTest": "",
-        "testType": "",
-        "totalExecutionTime": "",
-        "tests": []
+        // "applicationUnderTest": "",
+        // "testType": "",
+        // "totalExecutionTime": "",
+        "tests": [],
+        'chosenApp': ''
     };
     
     this.getResults = this.getResults.bind(this);
   }
 
-  getInitialData(){
-    axios.get('/api/get-dashboard-info')
-    .then(res => {
-      // console.log(res);
-      const apps = res.data.apps;
-      const tests = res.data.tests
-      this.setState({
-        "allApplications": apps,
-        "tests": tests
-      });
-    })
-  }
+
 
   // GET test results for clicked suite
   getResults(e){
@@ -44,13 +34,9 @@ class App extends Component{
     // console.log(e.target.innerHTML);
 
     const temp = e.target.innerHTML;
+    this.setState({ 'chosenApp': temp })
 
-    axios.get('/api/query-tests?apply_filters=true&app=' + temp)
-    .then(res => {
-      const data = res.data;
-      // console.log(data);
-      this.setState({ 'tests': data.query_results });
-    })
+
 
   }
 
@@ -59,19 +45,15 @@ class App extends Component{
 
     // This function should call all tests for display on the table
     console.log("App: componentDidMount");
-    this.getInitialData();
+    axios.get('/api/get-dashboard-info')
+    .then(res => {
+      console.log(res);
+      const apps = res.data.apps
+      this.setState({
+        "allApplications": apps
+      });
+    })
 
-    
-    // axios.get('/api/get-dashboard-info')
-    // .then(res => {
-    //   // console.log(res);
-    //   const apps = res.data.apps;
-    //   const tests = res.data.tests
-    //   this.setState({
-    //     "allApplications": apps,
-    //     "tests": tests
-    //   });
-    // })
   }
 
 render(){
@@ -81,7 +63,7 @@ render(){
     <div style={entityStyle}>
       <Box height={1} display="flex" border={1}>
         <Left apps={this.state.allApplications} getResults={this.getResults}/>
-        <Right tests={this.state}/>
+        <Right tests={this.state.chosenApp}/>
       </Box>
     </div>
   )}
