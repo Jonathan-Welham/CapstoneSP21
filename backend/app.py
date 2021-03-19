@@ -17,58 +17,64 @@ def post_tests():
         body = request.json if request.content_type == "application/json" else request.form
         app_id = None
         test_type_id = None
-        data = []
 
         # Checks that app info was given in the body
         if(not ('application' in body) or not body['application']):
             return jsonify({'success': False, 'message': "No application given"}), 404
 
-        # Grab the app id if the app is already in the db, or add it to the db and get its id
-        app_info = App.query.filter_by(app=body['application']).first()
-        if(app_info):
-            app_id = app_info.app_id
-        else:
-            app_info = App(body['application'])
-            db.session.add(app_info)
-            db.session.flush()
-            app_id = app_info.app_id
+        try:
+            # Grab the app id if the app is already in the db, or add it to the db and get its id
+            app_info = App.query.filter_by(app=body['application']).first()
+            if(app_info):
+                app_id = app_info.app_id
+            else:
+                app_info = App(body['application'])
+                db.session.add(app_info)
+                db.session.flush()
+                app_id = app_info.app_id
 
-        # checks that a test type was given in the body
-        if(not ('test_type' in body) or not body['test_type']):
-            return jsonify({'success': False, 'message': "No test_type given"}), 404
+            # checks that a test type was given in the body
+            if(not ('test_type' in body) or not body['test_type']):
+                return jsonify({'success': False, 'message': "No test_type given"}), 404
 
-        # Grab the id for test type if it is already in the db, or add the test type and get its id
-        test_type_info = Test_Type.query.filter_by(test_type=body['test_type']).first()
-        if(test_type_info):
-            test_type_id = test_type_id
-        else:
-            test_type_info = Test_Type(body['test_type'])
-            db.session.add(test_type_info)
-            db.session.flush()
-            test_type_id = test_type_info.test_type_id
+            # Grab the id for test type if it is already in the db, or add the test type and get its id
+            test_type_info = Test_Type.query.filter_by(test_type=body['test_type']).first()
+            if(test_type_info):
+                test_type_id = test_type_info.test_type_id
+            else:
+                test_type_info = Test_Type(body['test_type'])
+                db.session.add(test_type_info)
+                db.session.flush()
+                test_type_id = test_type_info.test_type_id
 
-        # for every test in the json add it to the database.  If it is already in the database instead of adding it update it
-        tests = body['tests']
-        tests_badly_formatted = []
-        tests_total = 0
-        tests_entered = 0
-        for test in tests:
-            # if not in proper format do not add to database, and sendback its formatted wrong
-            tests_total = tests_total + 1
-            if(not ('test' in test) or not test['test']):
-                tests_badly_formatted.append(test)
-                continue
+            # for every test in the json add it to the database.  If it is already in the database instead of adding it update it
+            tests = body['tests']
+            tests_badly_formatted = []
+            tests_total = 0
+            tests_entered = 0
+            for test in tests:
+                # if not in proper format do not add to database, and sendback its formatted wrong
+                tests_total = tests_total + 1
+                if(not ('test' in test) or not test['test']):
+                    tests_badly_formatted.append(test)
+                    continue
 
-            test_name = test['test'] 
-            execution_time = test['execution_time'] if 'execution_time' in test and test['execution_time'] else None
-            test_status = test['result'] if 'result' in test and test['result'] else None
+                test_name = test['test'] 
+                execution_time = test['execution_time'] if 'execution_time' in test and test['execution_time'] else None
+                test_status = test['result'] if 'result' in test and test['result'] else None
 
-            affected_row = Test.query.filter_by(test=test_name).update({'execution_time': execution_time, 'test_status': test_status, 'times_run': (Test.times_run + 1), 'entry_date': date.today()})
-            if(affected_row < 1):
-                temp_test = Test(app_id, test_type_id, test['test'], test['execution_time'], date.today(), test['result'])
-                db.session.add(temp_test)
-            tests_entered = tests_entered + 1
-        db.session.commit()
+                affected_row = Test.query.filter_by(test=test_name, app_id=app_id).update({'execution_time': execution_time, 'test_status': test_status, 'times_run': (Test.times_run + 1), 'entry_date': date.today()})
+                if(affected_row < 1):
+                    temp_test = Test(app_id, test_type_id, test['test'], test['execution_time'], date.today(), test['result'])
+                    db.session.add(temp_test)
+
+                tests_entered = tests_entered + 1
+            db.session.commit()
+        except Exception as e:
+            print(f"error: {e}",flush=True)
+            return jsonify({"success": False, "message": "Error: failed to to process data. Please try again"}), 200
+        finally:
+            db.session.close()
     else:
         # send a 404 error on bad data requests
         abort(404)
@@ -161,6 +167,8 @@ def get_apps():
         return (True, output)
     except:
         return (False,)
+    finally:
+        db.session.close()
 
 # returns the most recent rows of tests as an array of jsons containing test id, app name, test type, test, execution time,
 # entry date, test status, and times run in this order.
@@ -185,6 +193,8 @@ def get_recent_tests():
     except Exception as e:
         print(f"error: {e}", flush=True)
         return (False,)
+    finally:
+        db.session.close()
 
 @app.route('/')
 def home():
