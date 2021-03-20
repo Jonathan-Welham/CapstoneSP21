@@ -4,72 +4,12 @@ import { CustomTable } from "./CustomTable"
 // import axios from 'axios'
 
 
-const Right = (props) => {
+const Right = ({ tests }) => {
 
-    // constructor(props){
-    //     super(props);
-    //     console.log("Right: Constructor")
-    //     this.state = props;
-    //     console.log(this.state.chosenApp)
-    //     console.log(props)
-    //     console.log(this.props)
-    // };
-
-    // getInitialData(){
-    //     axios.get('/api/get-dashboard-info')
-    //     .then(res => {
-    //         console.log(res);
-    //         const tests = res.data.tests
-    //         this.setState({
-    //             "tests": tests
-    //         });
-    //     })
-    // }
-
-    // componentDidMount() {
-    //     console.log("Right: ComponentDidMount")
-    //     // console.log("Right: state")
-    //     // console.log(this.state)
-    //     // this.handleUpdateTests();
-    //     // this.getInitialData();
-    // }
-
-    // componentDidUpdate(prevProps, prevState) {
-    //     console.log("Right: ComponentDidUpdate")
-
-
-    //     console.log("prevProps")
-    //     console.log(prevProps)
-    //     console.log("prevState")
-    //     console.log(prevState)
-    //     console.log("this.state")
-    //     console.log(this.state)
-
-      
-    //     // this.state.chosenApp = this.props.chosenApp;
-
-    //     if (this.state.chosenApp !== this.props.chosenApp ) {
-    //         console.log("Right: prevState !== this.state")
-    //         this.handleUpdateTests();
-    //     }
-    // }
-
-    // handleUpdateTests = () => {
-    //     console.log("Right: handleUpdateTests")
-    //     if(this.props.chosenApp === ''){
-    //         return;
-    //     } else{
-    //         axios.get('/api/query-tests?apply_filters=true&app=' + this.props.chosenApp)
-    //         .then(res => {
-    //             const data = res.data;
-    //             // console.log(data);
-    //             this.setState({ 'tests': data.query_results });
-    //         });
-    //     }
-    // }
     console.log("Right: ")
-    const data = props.tests.tests;
+    const data = tests.tests;
     console.log(data);
+
     return(
         <Box display='flex' style={rightStyle} border={1}>
             <Grid 

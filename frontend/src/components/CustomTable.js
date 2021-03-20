@@ -8,7 +8,7 @@ export const CustomTable = (props) => {
     const data = props.data;
     console.log("CustomTable: Render");
     console.log(data);
-    if(data.length === 0 || data === undefined){
+    if(data === undefined || data.length === 0){
         return (<h1>No data to display</h1>);
     } else {
         return(
