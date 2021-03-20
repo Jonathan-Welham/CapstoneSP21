@@ -44,16 +44,16 @@ class App extends Component{
     // This function should call all tests for display on the table
 
     console.log("App: componentDidMount");
-    axios.get('/api/get-dashboard-info')
-    .then(res => {
-      // console.log(res);
-      const tests = res.data.tests
-      const apps = res.data.apps
-      this.setState({
-        "allApplications": apps,
-        "tests": tests
-      });
-    })
+    // axios.get('/api/get-dashboard-info')
+    // .then(res => {
+    //   // console.log(res);
+    //   const tests = res.data.tests
+    //   const apps = res.data.apps
+    //   this.setState({
+    //     "allApplications": apps,
+    //     "tests": tests
+    //   });
+    // })
 
   }
 

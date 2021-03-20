@@ -29,10 +29,7 @@ export const CustomTable = (props) => {
                     <TableBody>
                         {data.map((test) => (
                             <TableRow key={test.app}>
-                                <TableCell component="th" scope="test">
-                                    {test.app}
-                                </TableCell>
-                                {/* <TableCell align="right">{this.props.tests.applicationUnderTest}</TableCell> */}
+                                <TableCell align="right">{test.app}</TableCell>
                                 <TableCell align="right">{test.entry_date}</TableCell>
                                 <TableCell align="right">{test.execution_time}</TableCell>
                                 <TableCell align="right">{test.test}</TableCell>
