@@ -861,3 +861,5 @@ packages/react-devtools-shell/dist
 packages/react-devtools-scheduling-profiler/dist
 .ps1
 .sh
+
+test.rest
