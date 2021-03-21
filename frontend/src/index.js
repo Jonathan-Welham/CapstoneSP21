@@ -6,15 +6,6 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 
-// const GetTests = (props) =>{
-  
-
-
-//   return tests;
-// }
-
-
-
 
 const app = <App />
 
