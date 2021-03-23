@@ -21,6 +21,7 @@ class App extends Component{
         'chosenApp': ''
     };
     this.getResults = this.getResults.bind(this);
+    // TODO bind a function to return chosenApp state
   }
 
   // GET test results for clicked suite
@@ -29,37 +30,43 @@ class App extends Component{
     e.preventDefault();
     console.log(e.target.innerHTML);
     const temp = e.target.innerHTML;
-
-    axios.get('/api/query-tests?apply_filters=true&app=' + temp)
-    .then(res => {
-        const data = res.data.query_results;
-        // console.log(data);
-        this.setState({ 'tests': data });
-    });
-
+    this.setState({ 'chosenApp': temp });
   }
+
+  // getChosenApp(chosenApp){
+  //   console.log("getChosenApp - Parent")
+  //   // console.log(this.state.chosenApp)
+  //   axios.get('/api/query-tests?apply_filters=true&app=' + chosenApp)
+  //   .then(res => {
+  //       const data = res.data.query_results;
+  //       // console.log(data);
+  //       return data;
+  //   });
+  // }
+
+
 
   componentDidMount(){
     // Once everything gets rendered this function gets called.
     // This function should call all tests for display on the table
 
     console.log("App: componentDidMount");
-    // axios.get('/api/get-dashboard-info')
-    // .then(res => {
-    //   // console.log(res);
-    //   const tests = res.data.tests
-    //   const apps = res.data.apps
-    //   this.setState({
-    //     "allApplications": apps,
-    //     "tests": tests
-    //   });
-    // })
+    axios.get('/api/get-dashboard-info')
+    .then(res => {
+      // console.log(res);
+      const tests = res.data.tests
+      const apps = res.data.apps
+      this.setState({
+        "allApplications": apps,
+        "tests": tests
+      });
+    })
 
   }
 
 render(){
   console.log("App: Render");
-  console.log(this.state);
+  // console.log(this.state);
   // console.log(this.state.chosenApp)
 
   const tests = this.state;
