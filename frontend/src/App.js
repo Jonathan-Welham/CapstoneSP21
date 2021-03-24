@@ -1,4 +1,3 @@
-
 import { Component } from 'react'
 import "./App.css"
 import Left from "./components/Left"
@@ -62,8 +61,6 @@ render(){
     <div style={entityStyle}>
       <Box height={1} display="flex">
         <Left apps={this.state.allApplications} getResults={this.getResults}/>
-      </Box>
-      <Box height={1} display="flex">
         <Right tests={this.state}/>
       </Box>
     </div>
@@ -74,7 +71,6 @@ const entityStyle = {
   height: "100%",
   backgroundColor: 'white'
 }
-
 
 
 export default App;
