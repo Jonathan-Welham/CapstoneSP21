@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { Box, Grid, Paper } from '@material-ui/core'
 import MaterialTable from 'material-table'
+import StackedBar from './StackedBar'
 import axios from 'axios';
+
 
 const columns = [
     { title: "app_name", field: "app"},
@@ -21,51 +23,70 @@ class Right extends Component {
     constructor(props){
         console.log("Right: Constructor")
         super(props);
-        this.localData = this.props.tests.tests;        
+        // this.localData = this.props.tests.tests;
+        // console.log(this.localData)    
+        this.state = {
+            "allApplications": [],
+            "tests": [],
+            "chosenApp": '',
+        }    
     }
 
     componentDidMount(){
         console.log("Right: componentDidMount")
+        this.setState(
+        {   "tests": this.props.tests.tests, 
+            "allApplications": this.props.tests.allApplications,
+            "chosenApp": this.props.tests.chosenApp,
+        });
     }
 
-    componentDidUpdate(prevProps){
+    componentDidUpdate(prevProps, prevState){
         console.log("Right: componentDidUpdate")
+        console.log(Date.parse(new Date()));
 
-        if(this.localData === undefined){
-            return console.log("You're clicking too quickly, slow down")
-        }
+        // if(this.localData === undefined){
+        //     return console.log("You're clicking too quickly, slow down")
+        // }
 
-        if(this.localData.length === 0){
-            /*
-                BE AWARE: If there are no tests for an app this conditional will result with a very heavy infinite loop
-            */
-            this.localData = this.props.tests.tests;
-            this.forceUpdate();
-        }
+        // if(this.localData.length === 0){
+        //     /*
+        //         BE AWARE: If there are no tests for an app this conditional will result with a very heavy infinite loop
+        //     */
+        //     this.localData = this.props.tests.tests;
+        //     this.forceUpdate();
+        // }
+
+        console.log(prevProps.tests.chosenApp)
+        console.log(this.props.tests.chosenApp)
+        console.log(prevState.chosenApp)
+        console.log(this.state.chosenApp)
 
         if(prevProps.tests.chosenApp !== this.props.tests.chosenApp){
             console.log("Right: inside update conditional ")
-            if(this.props.tests.chosenApp === ''){
-                console.log("return")
-                return;
-            } else {
-                console.log("else")
-                axios.get('/api/query-tests?apply_filters=true&app=' + this.props.tests.chosenApp)
-                .then(res => {
-                    const data = res.data.query_results;
-                    // console.log(data);
-                    this.localData = data;
-                    this.forceUpdate();
-                });
-            }
+            console.log("else")
+            axios.get('/api/query-tests?apply_filters=true&app=' + this.props.tests.chosenApp)
+            .then(res => {
+                // const temp = res.data;
+                // console.log(temp);
+                const data = res.data.query_results;
+                // console.log(data);
+                // this.localData = data;
+                // this.forceUpdate();
+                this.setState({"tests": data, "chosenApp": this.props.tests.chosenApp});
+            });
             
         }
-
     }
 
     render(){
         console.log("Right: render")
-        console.log(this.localData)
+        console.log(Date.parse(new Date()));
+        // console.log(this.localData)
+        // console.log(this.props.tests)
+        const tests = this.state.tests;
+
+        console.log(this.state)
         return(
             <Box display='flex' style={rightStyle} border={1}>
                 <Grid 
@@ -78,7 +99,7 @@ class Right extends Component {
                     <Grid item xs={4}>
                         {/* Graph 1 */}
                         <Paper>
-                            Graph 1
+                            <StackedBar/>
                         </Paper>
                     </Grid>
                     <Grid item xs={4}>
@@ -95,11 +116,24 @@ class Right extends Component {
                     </Grid>
                     <Grid item xs={8}>
                         {/* Data Table */}
+                        {/* {tests.length > 0 
+                            ?   <MaterialTable
+                                    title="Test Data"
+                                    data={tests}
+                                    columns={columns}
+                                />
+                            :   <MaterialTable
+                                    title="Test Data"
+                                    data={this.props.tests.tests}
+                                    columns={columns}
+                                />
+                        } */}
                         <MaterialTable
                             title="Test Data"
-                            data={this.localData}
+                            data={tests}
                             columns={columns}
                         />
+                        
                     </Grid>
                     <Grid item xs={4}>
                         {/* Graph 4 */}

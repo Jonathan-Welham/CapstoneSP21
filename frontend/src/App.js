@@ -8,8 +8,8 @@ import axios from 'axios'
 
 class App extends Component{
 
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
 
     console.log("App: Constructor");
     this.state = {
@@ -21,15 +21,16 @@ class App extends Component{
         'chosenApp': ''
     };
     this.getResults = this.getResults.bind(this);
-    // TODO bind a function to return chosenApp state
   }
 
   // GET test results for clicked suite
   getResults(e){
     console.log("App: getResults");
-    e.preventDefault();
-    console.log(e.target.innerHTML);
-    const temp = e.target.innerHTML;
+    // e.preventDefault();
+    console.log(e.currentTarget.value)
+    // console.log(e.target.innerHTML);
+    // const temp = e.target.innerHTML;
+    const temp = e.currentTarget.value;
     this.setState({ 'chosenApp': temp });
   }
 
@@ -70,14 +71,18 @@ render(){
   // console.log(this.state.chosenApp)
 
   const tests = this.state;
+  const t = this.state.tests;
   const apps = this.state.allApplications;
   
   return (
     <div style={entityStyle}>
       <Box height={1} display="flex" border={1}>
-        <Left apps={apps} getResults={this.getResults}/>
-        <Right tests={tests}/>
-      </Box>
+       <Left apps={apps} getResults={this.getResults}/> 
+        {t.length > 0 
+          ? <Right tests={tests}/>
+          : <h1>Loading data</h1>
+        }
+        </Box>
     </div>
   )}
 }
