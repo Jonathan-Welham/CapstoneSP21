@@ -5,7 +5,6 @@ import DehazeIcon from '@material-ui/icons/Dehaze';
 
 class Left extends Component {
 
-
     render(){
       
         return (

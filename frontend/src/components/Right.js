@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableContainer, TableRow, TableHead } from
 
 class Right extends Component{
 
-
+    
     render(){
 
         return (
