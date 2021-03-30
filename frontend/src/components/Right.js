@@ -5,16 +5,16 @@ import StackedBar from './StackedBar'
 import axios from 'axios';
 
 
-const columns = [
-    { title: "app_name", field: "app"},
-    { title: "entry_date", field: "entry_date"},
-    { title: "execution_time", field: "execution_time"},
-    { title: "test", field: "test"},
-    { title: "test_id", field: "test_id"},
-    { title: "test_status", field: "test_status"},
-    { title: "test_type", field: "test_type"},
-    { title: "times_run", field: "times_run"},
-]
+// const columns = [
+//     { title: "app_name", field: "app"},
+//     { title: "entry_date", field: "entry_date"},
+//     { title: "execution_time", field: "execution_time"},
+//     { title: "test", field: "test"},
+//     { title: "test_id", field: "test_id"},
+//     { title: "test_status", field: "test_status"},
+//     { title: "test_type", field: "test_type"},
+//     { title: "times_run", field: "times_run"},
+// ]
 
 
 class Right extends Component {
@@ -131,7 +131,16 @@ class Right extends Component {
                         <MaterialTable
                             title="Test Data"
                             data={tests}
-                            columns={columns}
+                            columns={[
+                                { title: "app_name", field: "app"},
+                                { title: "entry_date", field: "entry_date"},
+                                { title: "execution_time", field: "execution_time"},
+                                { title: "test", field: "test"},
+                                { title: "test_id", field: "test_id"},
+                                { title: "test_status", field: "test_status"},
+                                { title: "test_type", field: "test_type"},
+                                { title: "times_run", field: "times_run"},
+                            ]}
                         />
                         
                     </Grid>
