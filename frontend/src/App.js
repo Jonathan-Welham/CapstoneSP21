@@ -77,7 +77,7 @@ render(){
   return (
     <div style={entityStyle}>
       <Box height={1} display="flex" border={1}>
-       <Left apps={apps} getResults={this.getResults}/> 
+       <Left className="left-layout" apps={apps} getResults={this.getResults}/> 
         {t.length > 0 
           ? <Right tests={tests}/>
           : <h1>Loading data</h1>
