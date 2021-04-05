@@ -1,4 +1,3 @@
-
 import { Component } from 'react'
 import "./App.css"
 import Left from "./components/Left"
@@ -89,7 +88,7 @@ render(){
 
 const entityStyle = {
   height: "100%",
-  backgroundColor: 'black'
+  backgroundColor: 'white'
 }
 
 

@@ -1,5 +1,6 @@
 // import { Component, React } from 'react'
 import { Box, Button } from '@material-ui/core'
+import DehazeIcon from '@material-ui/icons/Dehaze';
 // import { height } from '@material-ui/system'
 
 const Left = ({ apps, getResults }) => { 
@@ -14,9 +15,10 @@ const Left = ({ apps, getResults }) => {
     )
 };
 
+
 const leftStyle = {
-    backgroundColor: "royalblue",
-    flex: '1',
+    //backgroundColor: "royalblue",
+    //flex: '1',
     flexDirection: 'column',
     justifyContent: "center",
 }
