@@ -89,7 +89,6 @@ class Right extends Component {
         console.log(this.state)
         return(
             <Box display='flex' style={rightStyle} border={1}>
-
                 <Grid 
                     container 
                     direction="row"
@@ -105,13 +104,13 @@ class Right extends Component {
                     </Grid>
                     <Grid item xs={4}>
                         {/* Graph 2 */}
-                        <Paper className="grid" elevation={3}>
+                        <Paper>
                             Graph2
                         </Paper>
                     </Grid>
                     <Grid item xs={4}>
                         {/* Graph 3 */}
-                        <Paper className="grid" elevation={3}>
+                        <Paper>
                             Graph3
                         </Paper>
                     </Grid>
@@ -147,7 +146,7 @@ class Right extends Component {
                     </Grid>
                     <Grid item xs={4}>
                         {/* Graph 4 */}
-                        <Paper className="grid-a" elevation={3}>
+                        <Paper>
                             Graph 4
                         </Paper>
                     </Grid>
@@ -161,7 +160,7 @@ class Right extends Component {
 
 const rightStyle = {
     height: "100%",
-    //backgroundColor: "teal",
+    backgroundColor: "teal",
     flex: '6',
 }
 
