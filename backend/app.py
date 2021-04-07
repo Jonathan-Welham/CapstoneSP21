@@ -159,6 +159,20 @@ def get_dashboard_info():
     else:
         abort(404)
 
+@app.route('/api/get-test_frequencies', methods=['GET'])
+def get_test_frequencies():
+    if request.method == "GET":
+        entries = db.session.query(Test.entry_date, db.func.count(Test.entry_date)).group_by(Test.entry_date).all()
+        
+        output = {"counts": [], "dates": []}
+        for entry in entries:
+            output["dates"].append(str(entry[0].month) + "/" + str(entry[0].day))
+            output["counts"].append(entry[1])
+
+        return jsonify(output), 200
+    else:
+        abort(404)
+
 # returns the names of all apps
 def get_apps():
     try:
