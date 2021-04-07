@@ -3,6 +3,7 @@ import { Box, Grid, Paper } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import StackedBar from './StackedBar'
 import axios from 'axios';
+import LineGraph from './LineGraph';
 
 
 // const columns = [
@@ -25,10 +26,15 @@ class Right extends Component {
         super(props);
         // this.localData = this.props.tests.tests;
         // console.log(this.localData)    
+
         this.state = {
             "allApplications": [],
             "tests": [],
             "chosenApp": '',
+            "chosenTestData": {
+                        "labels": ["1/1", "1/2", "1/3", "1/4", "1/5"],
+                        "data": [31,11,56,5,23],
+            }
         }    
     }
 
@@ -85,8 +91,9 @@ class Right extends Component {
         // console.log(this.localData)
         // console.log(this.props.tests)
         const tests = this.state.tests;
+    
 
-        console.log(this.state)
+        console.log(this.state.testdata);
         return(
             <Box display='flex' style={rightStyle} border={1}>
                 <Grid 
@@ -105,7 +112,11 @@ class Right extends Component {
                     <Grid item xs={4}>
                         {/* Graph 2 */}
                         <Paper>
-                            Graph2
+                            <LineGraph
+                                data={this.state.chosenTestData}
+                                title={"graph"}
+                                color="#70CAD1"
+                            />
                         </Paper>
                     </Grid>
                     <Grid item xs={4}>
