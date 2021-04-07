@@ -95,7 +95,7 @@ class Right extends Component {
 
         console.log(this.state.testdata);
         return(
-            <Box display='flex' style={rightStyle} border={1}>
+            <Box className="right-box" display='flex' style={rightStyle} border={1}>
                 <Grid 
                     container 
                     direction="row"
@@ -171,7 +171,7 @@ class Right extends Component {
 
 const rightStyle = {
     height: "100%",
-    backgroundColor: "teal",
+    //backgroundColor: "teal",
     flex: '6',
 }
 
