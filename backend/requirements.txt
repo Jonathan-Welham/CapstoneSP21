@@ -4,3 +4,4 @@ mariadb
 SQLAlchemy<1.4
 PyMySQL
 flask_sqlalchemy
+APScheduler
