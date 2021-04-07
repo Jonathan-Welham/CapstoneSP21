@@ -4,6 +4,7 @@ WORKDIR /app/frontend
 COPY ./frontend ./
 RUN npm install
 # RUN npm run server
+
 RUN npm run build
 # CMD ["npm start"]
 
