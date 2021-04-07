@@ -230,6 +230,24 @@ def get_recent_tests():
 def home():
     return render_template("index.html")
 
+"""
+    An application factory for tethering a database to SQLAlchemy models.
+    For use in initialization or updates.
+    In practice:
+        Load in environment variables
+        Navigate to the backend directory
+        Import this function and run through a Python interactive session
+        1. >>> from app import create_app 
+        2. >>> from models import db      
+        3. >>> db.create_all(app=create_app())
+"""
+def create_app():
+    app = Flask(__name__, static_url_path='', static_folder='./build', template_folder='./build')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', "")
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
+    return app
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
