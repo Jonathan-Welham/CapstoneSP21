@@ -4,12 +4,40 @@ from datetime import date
 from flask import Flask, render_template, request, jsonify, abort
 from models import db
 from models import App, Test, Test_Type
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
+import time
 
 app = Flask(__name__, static_url_path='', static_folder='./build', template_folder='./build')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', "")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
+def mail():
+  print(time.strftime('%H:%M:%S'), flush=True)
+  mailer = Mailer()
+  mailer.set_message(subject='Daily Testing Status Report', body='Test body.............')
+  recepients = ['capstoneg21@gmail.com']
+  mailer.send(recepients)
+
+# create schedule for mailing status report
+scheduler = BackgroundScheduler()
+scheduler.start()
+
+scheduler.add_job(
+    func=mail, 
+    id='mailing_status_report', 
+    name='Mail every weekday at 5PM', 
+    trigger='cron', 
+    day_of_week='mon-fri', 
+    hour=17,
+    minute=0,
+    second=0, 
+    replace_existing=True)
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
 
 @app.route('/api/post-tests', methods=['POST'])
 def post_tests():
@@ -205,3 +233,4 @@ def home():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
+    # app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
