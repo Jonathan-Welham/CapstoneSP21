@@ -1,3 +1,7 @@
+# This wrapper class is no longer in use
+# An issue was discoverd while testing inside the container 
+# connecting to the mail server
+
 import os
 import imghdr
 import smtplib
@@ -103,6 +107,8 @@ class Mailer:
 		"""
 
 		self.message['To'] = ', '.join(recepients)
+
+		print('Sending!!!!!!!!!!!!!!!!!!!!!!!!!!1', flush=True)
 
 		with smtplib.SMTP_SSL(self.MAIL_SERVER, 465) as smtp:
 			smtp.login(self.EMAIL_ADDRESS, self.EMAIL_PASSWORD)

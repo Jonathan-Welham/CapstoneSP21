@@ -1,37 +1,55 @@
 import os
-from mailer import Mailer
-from datetime import date
-from flask import Flask, render_template, request, jsonify, abort
-from models import db
-from models import App, Test, Test_Type
-from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
-import time
+from datetime import date
+from flask_mail import Mail, Message
+from models import db, App, Test, Test_Type
+from apscheduler.schedulers.background import BackgroundScheduler
+from flask import Flask, render_template, request, jsonify, abort
 
 app = Flask(__name__, static_url_path='', static_folder='./build', template_folder='./build')
+
+# SQLAlchemy configurations
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', "")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Twillio Sendgrid configurations
+mail = Mail()
+app.config['MAIL_SERVER'] = os.environ.get('SENDGRID_MAIL_SERVER', "")
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'apikey'
+app.config['MAIL_PASSWORD'] = os.environ.get('SENDGRID_API_KEY', "")
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('EMAIL_ADDRESS', "")
+
+mail.init_app(app)
 db.init_app(app)
 
-def mail():
-  print(time.strftime('%H:%M:%S'), flush=True)
-  mailer = Mailer()
-  mailer.set_message(subject='Daily Testing Status Report', body='Test body.............')
-  recepients = ['capstoneg21@gmail.com']
-  mailer.send(recepients)
+def send_mail():  
+    with app.app_context():
+        msg = Message(subject='Test Mail', body='Twilio SendGrid Test Email', recipients=['capstoneg21@gmail.com'])
+        msg.html = (f'<!DOCTYPE html>\n'
+                    f'<html>\n'
+                    f'\t<body>\n'
+                    f'\t\t<h1 style="text-align: center;">Daily Testing Report</h1>\n'
+                    f'\t\t<p style="color: gray; text-align: center;">This is an Automated Email Delivered by the CIG Dashboard Tool</p>\n'
+                    f'\t\t<hr>\n'
+                    f'\t\t<p style="color: gray;">Content to be decided upon at a later time</p>\n'
+                    f'\t</body>\n'
+                    f'</html>')
+
+        mail.send(msg)
 
 # create schedule for mailing status report
 scheduler = BackgroundScheduler()
 scheduler.start()
 
 scheduler.add_job(
-    func=mail, 
+    func=send_mail, 
     id='mailing_status_report', 
     name='Mail every weekday at 5PM', 
     trigger='cron', 
     day_of_week='mon-fri', 
-    hour=17,
+    hour=17, # 5PM
     minute=0,
     second=0, 
     replace_existing=True)
@@ -245,7 +263,9 @@ def create_app():
     app = Flask(__name__, static_url_path='', static_folder='./build', template_folder='./build')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', "")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
     db.init_app(app)
+
     return app
 
 if __name__ == '__main__':
