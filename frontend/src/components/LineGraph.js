@@ -4,43 +4,58 @@ import {Line} from 'react-chartjs-2'
 class LineGraph extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            "data": [],
+            "labels": []
+        }
     }
 
     componentDidMount() {
-        this.options = {
-            maintainAspectRatio: false,
+        this.setState({
+            "data": this.props.data.data,
+            "labels": this.props.data.labels
+        });
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.data !== this.props.data){
+            this.setState({"data": this.props.data.data, "labels": this.props.data.labels});
+        }
+    }
+
+    render() {
+        let options = {
+            maintainAspectRatio: true,
             scales: {
                 yAxes: [
                     {
                         ticks: {
                             min: 0,
-                            max: 100
+                            max: 10
                         }
                     }
                 ]
             }
         }
 
-        this.data = {
-            labels: this.props.data.labels,
+        let data = {
+            labels: this.state.labels,
             datasets: [{
-                label: "graph",
                 fill: false,
                 lineTension: 0.5,
                 borderWidth: 2,
-                data: this.props.data.data,
+                data: this.state.data,
                 backgroundColor: this.props.color
             }]
         }
-    }
 
-    render() {
         return (
             <>
                 <div className='header'>
                     <h1 className='title'>Test frequency</h1>
                 </div>
-                <Line data={this.data} options={this.options} />
+                <Line data={data} options={options} />
             </>
         );
     }
