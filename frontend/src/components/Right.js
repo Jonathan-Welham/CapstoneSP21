@@ -31,10 +31,7 @@ class Right extends Component {
             "allApplications": [],
             "tests": [],
             "chosenApp": '',
-            "chosenTestData": {
-                        "labels": ["1/1", "1/2", "1/3", "1/4", "1/5"],
-                        "data": [31,11,56,5,23],
-            }
+            "testFrequencies": {}
         }    
     }
 
@@ -44,6 +41,7 @@ class Right extends Component {
         {   "tests": this.props.tests.tests, 
             "allApplications": this.props.tests.allApplications,
             "chosenApp": this.props.tests.chosenApp,
+            "testFrequencies": this.props.testFrequencies
         });
     }
 
@@ -81,6 +79,13 @@ class Right extends Component {
                 // this.forceUpdate();
                 this.setState({"tests": data, "chosenApp": this.props.tests.chosenApp});
             });
+
+            axios.get('/api/get-test-frequencies?app=' + this.props.tests.chosenApp).then(res => {
+                let data = {}
+                data["data"] = res.data.counts;
+                data["labels"] = res.data.dates;
+                this.setState({"testFrequencies": data});
+            });
             
         }
     }
@@ -91,9 +96,7 @@ class Right extends Component {
         // console.log(this.localData)
         // console.log(this.props.tests)
         const tests = this.state.tests;
-    
 
-        console.log(this.state.testdata);
         return(
             <Box className="right-box" display='flex' style={rightStyle} border={1}>
                 <Grid 
@@ -113,7 +116,7 @@ class Right extends Component {
                         {/* Graph 2 */}
                         <Paper>
                             <LineGraph
-                                data={this.state.chosenTestData}
+                                data={this.state["testFrequencies"]}
                                 title={"graph"}
                                 color="#70CAD1"
                             />
