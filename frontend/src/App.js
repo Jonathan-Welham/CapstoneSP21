@@ -59,7 +59,11 @@ class App extends Component{
       const apps = res.data.apps
       this.setState({
         "allApplications": apps,
-        "tests": tests
+        "tests": tests,
+        "testFrequencies": { 
+          "data": res.data.test_frequencies.counts,
+          "labels": res.data.test_frequencies.dates
+        }
       });
     })
 
@@ -79,7 +83,7 @@ render(){
       <Box height={1} display="flex" border={1}>
        <Left className="left-layout" apps={apps} getResults={this.getResults}/> 
         {t.length > 0 
-          ? <Right tests={tests}/>
+          ? <Right tests={tests} testFrequencies={this.state.testFrequencies}/>
           : <h1>Loading data</h1>
         }
         </Box>
