@@ -78,18 +78,6 @@ class Right extends Component {
                     </Grid>
                     <Grid item xs={8}>
                         {/* Data Table */}
-                        {/* {tests.length > 0 
-                            ?   <MaterialTable
-                                    title="Test Data"
-                                    data={tests}
-                                    columns={columns}
-                                />
-                            :   <MaterialTable
-                                    title="Test Data"
-                                    data={this.props.tests.tests}
-                                    columns={columns}
-                                />
-                        } */}
                         <MaterialTable
                             title="Test Data"
                             data={tests}
