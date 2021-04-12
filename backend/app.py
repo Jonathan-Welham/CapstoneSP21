@@ -1,7 +1,7 @@
 import os
 import atexit
 from mailer import Mailer
-from datetime import date
+from datetime import datetime
 from models import db, App, Test, Test_Type
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, render_template, request, jsonify, abort
@@ -90,10 +90,11 @@ def post_tests():
                 execution_time = test['execution_time'] if 'execution_time' in test and test['execution_time'] else None
                 test_status = test['result'] if 'result' in test and test['result'] else None
 
-                affected_row = Test.query.filter_by(test=test_name, app_id=app_id).update({'execution_time': execution_time, 'test_status': test_status, 'times_run': (Test.times_run + 1), 'entry_date': date.today()})
-                if(affected_row < 1):
-                    temp_test = Test(app_id, test_type_id, test['test'], test['execution_time'], date.today(), test['result'])
-                    db.session.add(temp_test)
+                #affected_row = Test.query.filter_by(test=test_name, app_id=app_id).update({'execution_time': execution_time, 'test_status': test_status, 'times_run': (Test.times_run + 1), 'entry_date': date.today()})
+                #if(affected_row < 1):
+                print(f"date: {datetime.today()}",flush=True)
+                temp_test = Test(app_id, test_type_id, test['test'], test['execution_time'], datetime.today(), test['result'])
+                db.session.add(temp_test)
 
                 tests_entered = tests_entered + 1
             db.session.commit()
@@ -175,16 +176,66 @@ def get_dashboard_info():
     if request.method == "GET":
         apps = get_apps()
         recent_tests = get_recent_tests()
+        test_frequencies = get_test_frequencies(None)
 
         output = {}
         if(apps[0]):
             output["apps"] = apps[1]
         if(recent_tests[0]):
             output["tests"] = recent_tests[1]
+        if(test_frequencies[0]):
+            entries = test_frequencies[1]
+            output["test_frequencies"] = {"dates": [], "counts": []}
+
+            for entry in entries:
+                output["test_frequencies"]["dates"].append(str(entry[0].month) + "/" + str(entry[0].day))
+                output["test_frequencies"]["counts"].append(entry[1])
 
         return jsonify(output), 200
     else:
         abort(404)
+
+@app.route('/api/get-test-frequencies', methods=['GET'])
+def get_test_frequencies_route():
+    if request.method == "GET":
+        entries = None
+
+        if(request.args and request.args['app']):
+            temp = get_test_frequencies(request.args['app'])
+            if(temp[0]):
+               entries = temp[1]; 
+            else:
+                return jsonify({"success": False, "message": "invalid query"}), 400
+        else:
+            temp = get_test_frequencies(None)
+            if(temp[0]):
+               entries = temp[1]; 
+            else:
+                return jsonify({"success": False, "message": "invalid query"}), 400
+
+        if(not entries):
+            return jsonify({"success": False, "message": "invalid query"}), 400
+
+        output = {"success": True, "counts": [], "dates": []}
+        for entry in entries:
+            output["dates"].append(str(entry[0].month) + "/" + str(entry[0].day))
+            output["counts"].append(entry[1])
+
+        return jsonify(output), 200
+    else:
+        abort(404)
+
+def get_test_frequencies(app):
+    try:
+        print(f"app: {app}", flush=True)
+        if(app):
+            return (True, db.session.query(db.func.cast(Test.entry_date, db.Date), db.func.count(db.func.cast(Test.entry_date, db.Date))).join(App) \
+            .filter(App.app == app).group_by(db.func.cast(Test.entry_date, db.Date)).all()) 
+        else:
+            return (True, db.session.query(db.func.cast(Test.entry_date, db.Date), db.func.count(db.func.cast(Test.entry_date, db.Date))).join(App) \
+            .group_by(db.func.cast(Test.entry_date, db.Date)).all())
+    except Exception as e:
+        return (False,)
 
 # returns the names of all apps
 def get_apps():
