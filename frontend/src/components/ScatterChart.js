@@ -15,7 +15,7 @@ const generateDataSets = data => {
     // For this app, retrieve the execution time for each test performed
     let executionTimes = apps[app].map((test) => { return test.execution_time });
 
-    // The plott will visualize how many tests ended after a period of time
+    // The plot will visualize how many tests ended after a period of time
     // The x-axis will tell the number of tests, while the y-axis tells the execution time
 
     // Calculate how many occurances of each execution time there are for this app's tests
@@ -84,7 +84,7 @@ class ScatterChart extends React.Component {
               stacked: true,
               scaleLabel: {
                 display: true,
-                labelString: 'Time (s)'
+                labelString: 'Time (ms)'
               },
               ticks: {
                 beginAtZero: true
