@@ -1,55 +1,35 @@
 import React from 'react';
 import {Scatter} from 'react-chartjs-2';
 
-// const groupBy = (array, key) =>
-//   array.reduce((objectsByKeyValue, obj) => {
-//     const value = obj[key];
-//     objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-//     return objectsByKeyValue;
-//   }, {});
-
-const groupByKey = (list, key) => list.reduce((hash, obj) => ({...hash, [obj[key]]:( hash[obj[key]] || [] ).concat(obj)}), {})
-
-// const map = arr.reduce((acc, e) => acc.set(e, (acc.get(e) || 0) + 1), new Map());
-
-// Get all item names
-// const itemNames = items.map((item) => {
-//   return item.name;
-// });
-
-
-
 const generateDataSets = data => {
-  // data is a list of objects
-  console.log(`Data to Parse: ${data}`);
-  console.table(data);
-
-  const groupByApp = groupByKey(data, "app");
-
+  // The parameter data is an array of objects, each containing all information pertaining to an individual test
+  
+  // Gather data by app name - create an object which uses app names as keys whose value is all tests performed on said app
   let apps = data.reduce((hash, obj) => ({...hash, [obj.app]:( hash[obj.app] || [] ).concat(obj)}), {});
 
-  console.log('groupByApp: ', groupByApp);
+  // Create an array to hold an object containing all data needed for a dataset of a scatter chart
+  let datasets = [];
 
-  let dataset = [];
+  // Create a dataset for each app identified in the object 'apps'
   for (const app in apps) {
-    console.log(`Parsing data for app: ${app}`);
-    let label = app;
-    // let executionTimes = [];
-    // groupByApp[app].forEach((test) => { executionTimes.push(test.execution_time) });
+    // For this app, retrieve the execution time for each test performed
     let executionTimes = apps[app].map((test) => { return test.execution_time });
-    console.log(`Execution times of all tests for app: ${app}, ${executionTimes}`);
-    let map = executionTimes.reduce((acc, e) => acc.set(e, (acc.get(e) || 0) + 1), new Map());
-    // list of lists, 0 = time, 1 = occurance count
-    // let c = [...map.entries()];
+
+    // The plott will visualize how many tests ended after a period of time
+    // The x-axis will tell the number of tests, while the y-axis tells the execution time
+
+    // Calculate how many occurances of each execution time there are for this app's tests
+    let map = executionTimes.reduce((occurances, time) => occurances.set(time, (occurances.get(time) || 0) + 1), new Map());
+    
+    // Map will be reinterpreted as a list of lists where the zeroth elem. represents exec. time, 
+    // and the first element represents the count of occurances
+    // Then the data used for plotting will be computed, determining the x and y values for each point on the scatter plot
     let data = [...map.entries()].map((pair) => { 
       return { x: pair[1], y: pair[0] }; 
     });
 
-    // data: c.map((pair) => { 
-    //   return { x: pair[1], y: pair[0] }; 
-    // })
-    // console.log(`Execution times of all tests for app: ${app}, ${c}`);
-    dataset.push({
+    // Collect all data computed as an object and append it to the datasets array
+    datasets.push({
       label: app,
       fill: false,
       backgroundColor: 'rgba(75,192,192,0.4)',
@@ -64,71 +44,67 @@ const generateDataSets = data => {
       pointHitRadius: 10,
       data: data
     });
-    
-
   }
 
-  console.log(dataset);
-  console.table(dataset);
-  return dataset;
+  return datasets;
 };
 
 class ScatterChart extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = { "data": [] };
-    }
+    this.state = { "data": [] };
+  }
 
-    componentDidMount() {
-      this.setState({ "data": this.props.data });
-    }
+  componentDidMount() {
+    this.setState({ "data": this.props.data });
+  }
 
-    componentDidUpdate(prevProps, prevState){
-        if (prevProps.data !== this.props.data) {
-            this.setState({"data": this.props.data});
-            console.log(`Props passed to ScatterChart, accessed in componentDidUpdate: ${JSON.stringify(this.props)}`);
-            let scatterData = {
-              datasets: generateDataSets(this.props.data)
-            };
-            
-            this.setState({"scatterData": scatterData});
-        }
+  componentDidUpdate(prevProps, prevState){
+    if (prevProps.data !== this.props.data) {
+      console.log(`New props passed to ScatterChart, accessed in componentDidUpdate: ${JSON.stringify(this.props)}`);
+      this.setState({"data": this.props.data});
+      let scatterData = {
+        datasets: generateDataSets(this.props.data)
+      };
+      this.setState({"scatterData": scatterData});
     }
-    render() {
-        return (
-            <>
-                <div className='header'>
-                    <h1 className='title'>Execution Times</h1>
-                </div>
-                <Scatter data={this.state.scatterData} options={{
-                  maintainAspectRatio: true,
-                  scales: {
-                    yAxes: [{
-                      stacked: true,
-                      scaleLabel: {
-                        display: true,
-                        labelString: 'Time (s)'
-                      },
-                      ticks: {
-                          beginAtZero: true
-                      }
-                    }],
-                    xAxes: [{
-                      scaleLabel: {
-                        display: true,
-                        labelString: '# of Tests'
-                      },
-                      ticks: {
-                          min: 1,
-                          stepSize: 1
-                      }
-                    }]
-                  }
-                }}/>
-            </>
-        );
-    }
+  }
+
+  render() {
+    return (
+      <>
+        <div className='header'>
+          <h1 className='title'>Execution Times</h1>
+        </div>
+        <Scatter data={this.state.scatterData} options={{
+          maintainAspectRatio: true,
+          scales: {
+            yAxes: [{
+              stacked: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Time (s)'
+              },
+              ticks: {
+                beginAtZero: true
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: '# of Tests'
+              },
+              ticks: {
+                min: 1,
+                stepSize: 1
+              }
+            }]
+          }
+        }}/>
+      </>
+    );
+  }
 }
 
 export default ScatterChart;
