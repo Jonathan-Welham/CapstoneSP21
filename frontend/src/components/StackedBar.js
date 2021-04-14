@@ -17,12 +17,12 @@ const StackedBar = (props) => {
       {
         label: '# Failing',
         data: [12, 19, 3, 5, 2, 3],
-        backgroundColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgb(255, 0, 0)',
       },
       {
         label: '# Passing',
         data: [3, 10, 13, 15, 22, 30],
-        backgroundColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgb(0, 255, 0)',
       },
     ],
   }

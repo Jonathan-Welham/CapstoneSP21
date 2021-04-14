@@ -66,18 +66,6 @@ class Right extends Component {
                     </Grid>
                     <Grid item xs={8}>
                         {/* Data Table */}
-                        {/* {tests.length > 0 
-                            ?   <MaterialTable
-                                    title="Test Data"
-                                    data={tests}
-                                    columns={columns}
-                                />
-                            :   <MaterialTable
-                                    title="Test Data"
-                                    data={this.props.tests.tests}
-                                    columns={columns}
-                                />
-                        } */}
                         <MaterialTable
                             title="Test Data"
                             data={tests}
@@ -87,9 +75,9 @@ class Right extends Component {
                                 { title: "Execution Time", field: "execution_time"},
                                 { title: "Test", field: "test"},
                                 { title: "Test Id", field: "test_id"},
-                                { title: "test_status", field: "test_status"},
-                                { title: "test_type", field: "test_type"},
-                                { title: "times_run", field: "times_run"},
+                                { title: "Status", field: "test_status"},
+                                { title: "Type", field: "test_type"},
+                                { title: "Times Run", field: "times_run"},
                             ]}
                         />
                     </Grid>
@@ -105,7 +93,7 @@ class Right extends Component {
     }
 }
 const rightStyle = {
-    height: "100%",
+    // height: "5%",
     //backgroundColor: "teal",
     flex: '6',
 }
