@@ -3,24 +3,32 @@ import { Box, Grid, Paper } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import StackedBar from './StackedBar'
 import axios from 'axios';
+import LineGraph from './LineGraph';
+
+
 class Right extends Component {
     constructor(props){
         console.log("Right: Constructor")
-        super(props);
+        super(props);  
+
         this.state = {
             "allApplications": [],
             "tests": [],
             "chosenApp": '',
+            "testFrequencies": {}
         }    
     }
+    
     componentDidMount(){
         console.log("Right: componentDidMount")
         this.setState(
         {   "tests": this.props.tests.tests, 
             "allApplications": this.props.tests.allApplications,
             "chosenApp": this.props.tests.chosenApp,
+            "testFrequencies": this.props.testFrequencies
         });
     }
+
     componentDidUpdate(prevProps, prevState){
         console.log("Right: componentDidUpdate")
         if(prevProps.tests.chosenApp !== this.props.tests.chosenApp){
@@ -31,12 +39,20 @@ class Right extends Component {
                 const data = res.data.query_results;
                 this.setState({"tests": data, "chosenApp": this.props.tests.chosenApp});
             });
+
+            axios.get('/api/get-test-frequencies?app=' + this.props.tests.chosenApp).then(res => {
+                let data = {}
+                data["data"] = res.data.counts;
+                data["labels"] = res.data.dates;
+                this.setState({"testFrequencies": data});
+            });
+            
         }
     }
+
     render(){
         console.log("Right: render")
         const tests = this.state.tests;
-        console.log(this.state)
         return(
             <Box className="right-box" display='flex' style={rightStyle} border={1}>
                 <Grid 
@@ -55,7 +71,11 @@ class Right extends Component {
                     <Grid item xs={4}>
                         {/* Graph 2 */}
                         <Paper>
-                            Graph2
+                            <LineGraph
+                                data={this.state["testFrequencies"]}
+                                title={"graph"}
+                                color="#70CAD1"
+                            />
                         </Paper>
                     </Grid>
                     <Grid item xs={4}>
