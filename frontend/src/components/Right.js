@@ -5,6 +5,7 @@ import StackedBar from './StackedBar'
 import axios from 'axios';
 
 
+
 // const columns = [
 //     { title: "app_name", field: "app"},
 //     { title: "entry_date", field: "entry_date"},
@@ -114,7 +115,7 @@ class Right extends Component {
                             Graph3
                         </Paper>
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid className="data-table" item xs={8}>
                         {/* Data Table */}
                         {/* {tests.length > 0 
                             ?   <MaterialTable
@@ -159,7 +160,7 @@ class Right extends Component {
 
 
 const rightStyle = {
-    height: "100%",
+    //height: "100%",
     //backgroundColor: "teal",
     flex: '6',
 }
