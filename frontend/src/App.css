@@ -6,12 +6,17 @@ html,
 body,
 #root {
   height: 100%;
+  overflow: auto;
 }
 
 /* Right-Box */
 .right-box {
   background-color: #f1f1f1;
   padding: 1.5%;
+}
+
+#data-table {
+  max-height: 25%;
 }
 
 /*#data-table {
@@ -32,6 +37,7 @@ body,
   background-color: #1c4c74;
   color: white;
   position: relative;
+  min-width: 10%;
 
   display: flex;
   justify-content: center;
