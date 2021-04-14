@@ -3,14 +3,13 @@ import { Box, Grid, Paper } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import StackedBar from './StackedBar'
 import axios from 'axios';
-import LineGraph from './LineGraph';
+import LineGraph from './LineGraph'
 
 
 class Right extends Component {
     constructor(props){
         console.log("Right: Constructor")
-        super(props);  
-
+        super(props);
         this.state = {
             "allApplications": [],
             "tests": [],
