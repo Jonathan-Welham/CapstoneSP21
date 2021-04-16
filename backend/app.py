@@ -2,7 +2,7 @@ import os
 import atexit
 from mailer import Mailer
 from datetime import datetime
-from models import db, App, Test, Test_Type
+from models import db, App, Test, Test_Type, Test_Run
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, render_template, request, jsonify, abort
 
@@ -89,12 +89,20 @@ def post_tests():
                 test_name = test['test'] 
                 execution_time = test['execution_time'] if 'execution_time' in test and test['execution_time'] else None
                 test_status = test['result'] if 'result' in test and test['result'] else None
+                entry_date = datetime.today()
 
-                #affected_row = Test.query.filter_by(test=test_name, app_id=app_id).update({'execution_time': execution_time, 'test_status': test_status, 'times_run': (Test.times_run + 1), 'entry_date': date.today()})
-                #if(affected_row < 1):
-                print(f"date: {datetime.today()}",flush=True)
-                temp_test = Test(app_id, test_type_id, test['test'], test['execution_time'], datetime.today(), test['result'])
-                db.session.add(temp_test)
+                affected_row = Test.query.filter_by(test=test_name, app_id=app_id).update({'execution_time': execution_time, 'test_status': test_status, 'times_run': (Test.times_run + 1), 'entry_date': entry_date})
+                temp_test_run = None
+                if(affected_row < 1):
+                    temp_test = Test(app_id, test_type_id, test['test'], test['execution_time'], entry_date, test['result'])
+                    db.session.add(temp_test)
+                    db.session.flush()
+                    test_id = temp_test.test_id
+                    temp_test_run = Test_Run(test_id, temp_test.execution_time, temp_test.entry_date, temp_test.test_status)
+                else:
+                    test_id = db.session.query(Test.test_id).filter_by(test=test['test']).first()[0]
+                    temp_test_run = Test_Run(test_id, test['execution_time'], entry_date, test['result'])
+                db.session.add(temp_test_run)
 
                 tests_entered = tests_entered + 1
             db.session.commit()
