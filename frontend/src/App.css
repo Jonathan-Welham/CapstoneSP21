@@ -12,6 +12,7 @@ body,
 .right-box {
   background-color: #f1f1f1;
   padding: 1.5%;
+  min-height: 100%;
 }
 
 /*#data-table {
