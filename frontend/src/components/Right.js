@@ -12,9 +12,7 @@ class Right extends Component {
 
     constructor(props){
         console.log("Right: Constructor")
-        super(props);
-        // this.localData = this.props.tests.tests;
-        // console.log(this.localData)    
+        super(props); 
 
         this.state = {
             "allApplications": [],
@@ -98,14 +96,14 @@ class Right extends Component {
                             title="Test Data"
                             data={tests}
                             columns={[
-                                { title: "app_name", field: "app"},
-                                { title: "entry_date", field: "entry_date"},
-                                { title: "execution_time", field: "execution_time"},
-                                { title: "test", field: "test"},
-                                { title: "test_id", field: "test_id"},
-                                { title: "test_status", field: "test_status"},
-                                { title: "test_type", field: "test_type"},
-                                { title: "times_run", field: "times_run"},
+                                { title: "App Name", field: "app"},
+                                { title: "Entry Date", field: "entry_date"},
+                                { title: "Execution Time", field: "execution_time"},
+                                { title: "Test", field: "test"},
+                                { title: "Id", field: "test_id"},
+                                { title: "Status", field: "test_status"},
+                                { title: "Type", field: "test_type"},
+                                { title: "Times Run", field: "times_run"},
                             ]}
                         />
                         
@@ -126,7 +124,6 @@ class Right extends Component {
 
 const rightStyle = {
     height: "100%",
-    //backgroundColor: "teal",
     flex: '6',
 }
 
