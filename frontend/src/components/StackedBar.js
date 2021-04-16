@@ -56,7 +56,7 @@ const StackedBar = (props) => {
 
   return(  
     <>
-      <h2 className='title'>Total: Pass/Fail</h2>
+      <h1 className='title'>Total: Pass/Fail</h1>
       <Bar data={data} options={options} />
 
     </>
