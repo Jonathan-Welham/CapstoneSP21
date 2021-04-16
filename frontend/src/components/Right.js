@@ -110,7 +110,7 @@ class Right extends Component {
                     <Grid item xs={4}>
                         {/* Graph 1 */}
                         <Paper>
-                            <StackedBar/>
+                            <StackedBar data={this.state["tests"]}/>
                         </Paper>
                     </Grid>
                     <Grid item xs={4}>
