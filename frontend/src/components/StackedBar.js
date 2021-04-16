@@ -53,7 +53,6 @@ const StackedBar = (props) => {
       ],
     },
   }
-
   return(  
     <>
       <h1 className='title'>Total: Pass/Fail</h1>

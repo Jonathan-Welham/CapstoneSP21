@@ -9,8 +9,6 @@ import ScatterChart from './ScatterChart'
 
 
 class Right extends Component {
-
-
     constructor(props){
         console.log("Right: Constructor")
         super(props); 
@@ -22,7 +20,7 @@ class Right extends Component {
             "testFrequencies": {}
         }    
     }
-
+    
     componentDidMount(){
         console.log("Right: componentDidMount")
         this.setState(
@@ -35,7 +33,6 @@ class Right extends Component {
 
     componentDidUpdate(prevProps, prevState){
         console.log("Right: componentDidUpdate")
-
         if(prevProps.tests.chosenApp !== this.props.tests.chosenApp){
             console.log("Right: inside update conditional ")
             console.log("else")
@@ -57,9 +54,7 @@ class Right extends Component {
 
     render(){
         console.log("Right: render")
-
         const tests = this.state.tests;
-
         return(
             <Box className="right-box" display='flex' style={rightStyle} border={1}>
                 <Grid 
@@ -107,7 +102,6 @@ class Right extends Component {
                                 { title: "Times Run", field: "times_run"},
                             ]}
                         />
-                        
                     </Grid>
                     <Grid item xs={4}>
                         {/* Graph 4 */}
@@ -119,13 +113,9 @@ class Right extends Component {
             </Box>
         );
     }
-    
 }
-
-
 const rightStyle = {
     height: "100%",
     flex: '6',
 }
-
 export default Right;
