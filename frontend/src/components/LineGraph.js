@@ -42,6 +42,7 @@ class LineGraph extends React.Component {
         let data = {
             labels: this.state.labels,
             datasets: [{
+                label: '',
                 fill: false,
                 lineTension: 0.5,
                 borderWidth: 2,

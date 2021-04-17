@@ -3,8 +3,8 @@ import { Box, Grid, Paper } from '@material-ui/core'
 import MaterialTable from 'material-table'
 import StackedBar from './StackedBar'
 import axios from 'axios';
-import LineGraph from './LineGraph'
-
+import LineGraph from './LineGraph';
+import ScatterChart from './ScatterChart'
 
 class Right extends Component {
     constructor(props){
@@ -64,7 +64,7 @@ class Right extends Component {
                     <Grid item xs={4}>
                         {/* Graph 1 */}
                         <Paper>
-                            <StackedBar t={this.state}/>
+                          <StackedBar data={this.state["tests"]}/>
                         </Paper>
                     </Grid>
                     <Grid item xs={4}>
@@ -80,7 +80,7 @@ class Right extends Component {
                     <Grid item xs={4}>
                         {/* Graph 3 */}
                         <Paper>
-                            Graph3
+                            <ScatterChart data={this.state["tests"]}/>
                         </Paper>
                     </Grid>
                     <Grid item xs={8}>
