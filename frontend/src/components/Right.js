@@ -9,7 +9,8 @@ import ScatterChart from './ScatterChart'
 class Right extends Component {
     constructor(props){
         console.log("Right: Constructor")
-        super(props);
+        super(props); 
+
         this.state = {
             "allApplications": [],
             "tests": [],
@@ -89,11 +90,11 @@ class Right extends Component {
                             title="Test Data"
                             data={tests}
                             columns={[
-                                { title: "App", field: "app"},
+                                { title: "App Name", field: "app"},
                                 { title: "Entry Date", field: "entry_date"},
                                 { title: "Execution Time", field: "execution_time"},
                                 { title: "Test", field: "test"},
-                                { title: "Test Id", field: "test_id"},
+                                { title: "Id", field: "test_id"},
                                 { title: "Status", field: "test_status"},
                                 { title: "Type", field: "test_type"},
                                 { title: "Times Run", field: "times_run"},
@@ -112,8 +113,7 @@ class Right extends Component {
     }
 }
 const rightStyle = {
-    // height: "5%",
-    //backgroundColor: "teal",
+    height: "100%",
     flex: '6',
 }
 export default Right;

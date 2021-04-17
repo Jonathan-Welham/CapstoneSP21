@@ -23,7 +23,6 @@ class App extends Component{
   // GET test results for clicked suite
   getResults(e){
     console.log("App: getResults");
-
     console.log(e.currentTarget.value)
     const temp = e.currentTarget.value;
     this.setState({ 'chosenApp': temp });
