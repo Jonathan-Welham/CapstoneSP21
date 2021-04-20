@@ -28,13 +28,11 @@ class App extends Component{
     this.setState({ 'chosenApp': temp });
   }
 
-
+  // Once everything gets rendered this function gets called.
+  // This function should call all tests for display on the table
   componentDidMount(){
-    /*
-      Once everything gets rendered this function gets called.
-      This function should call all tests for display on the table
-    */
     console.log("App: componentDidMount");
+
     axios.get('/api/get-dashboard-info')
     .then(res => {
       const tests = res.data.tests

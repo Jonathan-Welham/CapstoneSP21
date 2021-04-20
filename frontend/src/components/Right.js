@@ -6,8 +6,6 @@ import axios from 'axios';
 import LineGraph from './LineGraph';
 import ScatterChart from './ScatterChart'
 
-
-
 class Right extends Component {
     constructor(props){
         console.log("Right: Constructor")
@@ -67,7 +65,7 @@ class Right extends Component {
                     <Grid item xs={4}>
                         {/* Graph 1 */}
                         <Paper>
-                            <StackedBar t={this.state}/>
+                          <StackedBar data={this.state["tests"]}/>
                         </Paper>
                     </Grid>
                     <Grid item xs={4}>
