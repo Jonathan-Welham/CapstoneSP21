@@ -41,7 +41,7 @@ class Test(db.Model):
 
     __table_args__ = (
         # this can be db.PrimaryKeyConstraint if you want it to be a primary key
-        db.UniqueConstraint('test', 'app_id', name='unique_testname'),
+        db.UniqueConstraint('test', 'app_id', 'entry_date', name='unique_testname'),
     )
 
     def __init__(self, app_id, test_type_id, test, execution_time, entry_date, test_status):

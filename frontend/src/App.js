@@ -14,9 +14,6 @@ class App extends Component{
     console.log("App: Constructor");
     this.state = {
         "allApplications": [],
-        // "applicationUnderTest": "",
-        // "testType": "",
-        // "totalExecutionTime": "",
         "tests": [],
         'chosenApp': ''
     };
@@ -26,40 +23,27 @@ class App extends Component{
   // GET test results for clicked suite
   getResults(e){
     console.log("App: getResults");
-    // e.preventDefault();
     console.log(e.currentTarget.value)
-    // console.log(e.target.innerHTML);
-    // const temp = e.target.innerHTML;
     const temp = e.currentTarget.value;
     this.setState({ 'chosenApp': temp });
   }
 
-  // getChosenApp(chosenApp){
-  //   console.log("getChosenApp - Parent")
-  //   // console.log(this.state.chosenApp)
-  //   axios.get('/api/query-tests?apply_filters=true&app=' + chosenApp)
-  //   .then(res => {
-  //       const data = res.data.query_results;
-  //       // console.log(data);
-  //       return data;
-  //   });
-  // }
-
-
-
+  // Once everything gets rendered this function gets called.
+  // This function should call all tests for display on the table
   componentDidMount(){
-    // Once everything gets rendered this function gets called.
-    // This function should call all tests for display on the table
-
     console.log("App: componentDidMount");
+
     axios.get('/api/get-dashboard-info')
     .then(res => {
-      // console.log(res);
       const tests = res.data.tests
       const apps = res.data.apps
       this.setState({
         "allApplications": apps,
-        "tests": tests
+        "tests": tests,
+        "testFrequencies": { 
+          "data": res.data.test_frequencies.counts,
+          "labels": res.data.test_frequencies.dates
+        }
       });
     })
 
@@ -67,8 +51,6 @@ class App extends Component{
 
 render(){
   console.log("App: Render");
-  // console.log(this.state);
-  // console.log(this.state.chosenApp)
 
   const tests = this.state;
   const t = this.state.tests;
@@ -79,7 +61,7 @@ render(){
       <Box height={1} display="flex" border={1}>
        <Left className="left-layout" apps={apps} getResults={this.getResults}/> 
         {t.length > 0 
-          ? <Right tests={tests}/>
+          ? <Right tests={tests} testFrequencies={this.state.testFrequencies}/>
           : <h1>Loading data</h1>
         }
         </Box>

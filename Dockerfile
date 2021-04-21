@@ -1,9 +1,10 @@
 # Spin up the frontend and build it into static files
-FROM node:15.10.0-alpine as build
+FROM node:latest as build
 WORKDIR /app/frontend
 COPY ./frontend ./
 RUN npm install
 # RUN npm run server
+
 RUN npm run build
 # CMD ["npm start"]
 

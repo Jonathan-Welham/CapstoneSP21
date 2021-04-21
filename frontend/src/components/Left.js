@@ -1,33 +1,39 @@
 //import { Component, React } from 'react'
 import { Box, Button } from '@material-ui/core'
 // import { height } from '@material-ui/system'
-import AppsRoundedIcon from '@material-ui/icons/AppsRounded';
+//import AppsRoundedIcon from '@material-ui/icons/AppsRounded';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import { makeStyles } from '@material-ui/core/styles';
 
 
+const useStyles = makeStyles((theme) => ({
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(2),
+    },
+}));
 
 const Left = ({ apps, getResults }) => { 
 
-
+    const classes = useStyles();
+    
     return (
         <Box className="left-box">
-                <FormControl>
-                <InputLabel id="demo-customized-select-label">Apps</InputLabel>
-                <Select labelId="demo-customized-select-label" 
-                    id="demo-customized-select"
-                >
-                    <MenuItem value="">
-                        <em>None</em>
-                    </MenuItem>
+            <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel htmlFor="outlined-age-native-simple">Apps</InputLabel>
+                <Select className="app-select" >
+                    <option aria-label="None" value="" />
                     {/* Buttons will be dynamically created for how many applications there are */}
                     {apps.map((app) => (
-                        <MenuItem value={app.app} key={app.app} onClick={app.getResults}>{app.app}</MenuItem>
+                        <option value={app.app} key={app.app} onClick={getResults}>{app.app}</option>
                     ))}
                 </Select>
-                </FormControl>
+            </FormControl>
             <div id="logo-div">
                 <img id="logo-img" src="./logo.jpg" />
             </div>
