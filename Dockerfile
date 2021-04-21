@@ -2,7 +2,7 @@
 FROM node:latest as build
 WORKDIR /app/frontend
 COPY ./frontend ./
-RUN npm install
+RUN npm install -g npm@7.10.0
 # RUN npm run server
 
 RUN npm run build
