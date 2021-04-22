@@ -1,11 +1,39 @@
 import React from 'react';
 import {Scatter} from 'react-chartjs-2';
 
+/**
+ * Processes array of objects passed to the ScatterChart component as a property (prop)
+ * to create a dataset (all test execution times, grouped by app) required to populate a Scatter chart
+ * @param data Array of objects with attributes pertaining to a single test 
+ * @returns Object with attributes required to populate a Scatter chart
+ */
 const generateDataSets = data => {
-  // The parameter data is an array of objects, each containing all information pertaining to an individual test
+  // Step #1: Take the array of objects and create a single object which uses app names as keys whose value is all tests performed on said app
+
+  /*
+  Approach: The Reduce Method
+    For each element: 
+      Check if the app name has been selected as a key in hash, 
+      if so set the value to the current value of the pair in hash which should be a list of objects,
+      if not create a key value pair with the app name as the key and set its value to an empty array,
+      then concatenate the current object to this key's list of objects
+      Return a merged object containg hash and this key value pair
+    The end result will be a single objects with unique app names as keys, and their pertaining list of test objects as their values
+  */
   
-  // Gather data by app name - create an object which uses app names as keys whose value is all tests performed on said app
   let apps = data.reduce((hash, obj) => ({...hash, [obj.app]:( hash[obj.app] || [] ).concat(obj)}), {});
+
+  // Step #2: Discern the count of occurances (x-axis) of each test's execution time (y-axis) for a given app
+
+  /*
+  Approach: Object Iteration
+    For each app iterate through its related array of test objects, 
+    and for each object (test) retrieve its execution time
+    Compose these execution times as an array of doubles
+    From this array, calculate the count of occurances of each possible execution time
+    Create an array of plot objects, each object represents a point on the chart - {x: count, y: time} 
+    Add this array to a dataset object and append this dataset to an array (one dataset per app) 
+  */
 
   // Create an array to hold an object containing all data needed for a dataset of a scatter chart
   let datasets = [];
@@ -13,7 +41,7 @@ const generateDataSets = data => {
   // Create a dataset for each app identified in the object 'apps'
   for (const app in apps) {
     // For this app, retrieve the execution time for each test performed
-    let executionTimes = apps[app].map((test) => { return test.execution_time });
+    let executionTimes = apps[app].map((test) => test.execution_time);
 
     // The plot will visualize how many tests ended after a period of time
     // The x-axis will tell the number of tests, while the y-axis tells the execution time
