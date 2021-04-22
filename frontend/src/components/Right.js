@@ -153,8 +153,9 @@ class Right extends Component {
                                 title="Test History"
                                 data={this.state["modalData"]}
                                 columns={[
+                                    { title: "Id", field: "test_id"},
                                     { title: "Entry Date", field: "entry_date" },
-                                    { title: "Execution Time", field: "execution_time" },
+                                    { title: "Execution Time (ms)", field: "execution_time" },
                                     { title: "Status", field: "test_status" }
                                 ]}
                             />

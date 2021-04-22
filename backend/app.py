@@ -269,15 +269,16 @@ def get_test_history_route():
 
             try:
                 # Retrieves the test run history for a specific test by test id
-                tests = db.session.query(Test_Run.entry_date, Test_Run.execution_time,
+                tests = db.session.query(Test_Run.test_id, Test_Run.entry_date, Test_Run.execution_time,
                                          Test_Run.test_status).filter(Test_Run.test_id == test_id).all()
 
                 output = []
                 for test in tests:
                     output.append({
-                        "entry_date": test[0],
-                        "execution_time": test[1],
-                        "test_status": test[2]
+                        "test_id": test[0],
+                        "entry_date": test[1],
+                        "execution_time": test[2],
+                        "test_status": test[3]
                     })
 
                 return jsonify(output)
