@@ -60,13 +60,14 @@ class Test(db.Model):
 
 class Test_Run(db.Model):
     __tablename__ = "Test_Run"
-    test_id = Column('test_id', Integer, primary_key=True)
+    test_id = Column('test_id', Integer, ForeignKey("Test.test_id"))
     execution_time = Column('execution_time', Float)
     entry_date = Column('entry_date', DateTime)
     test_status = Column('test_status', String(64))
 
     __table_args__ = (
         # this can be db.PrimaryKeyConstraint if you want it to be a primary key
+        db.PrimaryKeyConstraint('test_id', 'entry_date'),
         db.UniqueConstraint('test_id', 'entry_date', name='unique_testrun'),
     )
 
