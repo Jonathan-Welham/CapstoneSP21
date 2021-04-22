@@ -6,6 +6,7 @@ html,
 body,
 #root {
   height: 100%;
+  overflow: auto;
 }
 
 /* Right-Box */
@@ -15,7 +16,7 @@ body,
 }
 
 .data-table {
-  height: 40%;
+  height: 50%;
   overflow-x: auto;
   white-space: nowrap;
 }

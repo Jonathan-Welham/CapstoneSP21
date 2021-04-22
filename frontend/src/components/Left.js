@@ -48,6 +48,8 @@ const leftStyle = {
     flex: '1',
     flexDirection: 'column',
     justifyContent: "center",
+
+    25: onClick={getResults}
 }*/
 
 export default Left
