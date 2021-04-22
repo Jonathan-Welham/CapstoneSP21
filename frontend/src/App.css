@@ -16,7 +16,7 @@ body,
 }
 
 .data-table {
-  height: 40%;
+  height: 50%;
   overflow-x: auto;
   white-space: nowrap;
 }
