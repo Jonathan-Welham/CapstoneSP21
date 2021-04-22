@@ -175,7 +175,7 @@ class Right extends Component {
 }
 
 const rightStyle = {
-    height: "100%",
+    //height: "100%",
     flex: '6',
 }
 export default Right;
