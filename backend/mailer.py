@@ -77,7 +77,7 @@ class Mailer:
 			f'\t\t<h1 style="text-align: center;">This is an Automated Email</h1>\n'
 			f'\t\t<p style="color: gray; text-align: center;">Delivered by the CIG Dashboard Tool</p>\n'
 			f'\t\t<hr>\n'
-			f'\t\t<p style="color: gray;">{body}</p>\n'
+			f'{body}'
 			f'\t</body>\n'
 			f'</html>', subtype='html')
 

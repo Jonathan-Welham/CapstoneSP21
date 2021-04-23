@@ -14,7 +14,8 @@ class App(db.Model):
         self.app = app
     
     def __str__(self):
-        return "{" + f"app: {self.app} \n appID: {self.app_id}" + "}"
+        # return "{" + f"app: {self.app} \n appID: {self.app_id}" + "}"
+        return f'{{ "app": "{self.app}", "appID": "{self.app_id}" }}'
 
 class Test_Type(db.Model):
     __tablename__ = 'Test_Type'
@@ -26,7 +27,8 @@ class Test_Type(db.Model):
         self.test_type = test_type
 
     def __str__(self):
-        return "{" + f"test_type: {self.test_type} \n test_type_id: {self.test_type_id}" + "}"
+        # return "{" + f"test_type: {self.test_type} \n test_type_id: {self.test_type_id}" + "}"
+        return f'{{ "test_type": "{self.test_type}", "test_type_id": "{self.test_type_id}" }}'
 
 class Test(db.Model):
     __tablename__ = "Test"
@@ -55,8 +57,10 @@ class Test(db.Model):
         self.times_run = 1
 
     def __str__(self):
-        return "{" + f"test: {self.test}\n test_id: {self.test_id}\n app_id: {self.app_id}\n test_type_id: {self.test_type_id}\n "
-        + f"execution_time: {self.execution_time}\n entry_date: {self.entry_date}\n test_status: {self.test_status}" + "}"
+        # return "{" + f"test: {self.test}\n test_id: {self.test_id}\n app_id: {self.app_id}\n test_type_id: {self.test_type_id}\n " \
+        # + f"execution_time: {self.execution_time}\n entry_date: {self.entry_date}\n test_status: {self.test_status}" + "}"
+
+        return f'{{ "test": "{self.test}", "test_id": "{self.test_id}", "app_id": "{self.app_id}", "test_type_id": "{self.test_type_id}", "execution_time": "{self.execution_time}", "entry_date": "{self.entry_date}", "test_status": "{self.test_status}" }}'
 
 class Test_Run(db.Model):
     __tablename__ = "Test_Run"
@@ -78,4 +82,6 @@ class Test_Run(db.Model):
         self.test_status = test_status
 
     def __str__(self):
-        return "{" + f"test_id: {self.test_id}\n" + f"execution_time: {self.execution_time}\n entry_date: {self.entry_date}\n test_status: {self.test_status}" + "}"
+        # return "{" + f"test_id: {self.test_id}\n" + f"execution_time: {self.execution_time}\n entry_date: {self.entry_date}\n test_status: {self.test_status}" + "}"
+        return f'{{ "test_id": "{self.test_id}", "execution_time": "{self.execution_time}", "entry_date": "{self.entry_date}", "test_status": "{self.test_status}" }}'
+
