@@ -53,6 +53,7 @@ class Right extends Component {
                 let data = {}
                 data["data"] = res.data.counts;
                 data["labels"] = res.data.dates;
+                data["title"] = this.props.tests.chosenApp ? this.props.tests.chosenApp : "Apps";
                 this.setState({ "testFrequencies": data });
             });
 
@@ -62,6 +63,7 @@ class Right extends Component {
     render() {
         console.log("Right: render")
         const tests = this.state.tests;
+        console.log("app: ", this.state.chosenApp);
 
         return (
             <>
@@ -84,7 +86,6 @@ class Right extends Component {
                             <Paper>
                                 <LineGraph
                                     data={this.state["testFrequencies"]}
-                                    title={"graph"}
                                     color="#70CAD1"
                                 />
                             </Paper>
