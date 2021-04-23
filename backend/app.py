@@ -1,4 +1,5 @@
 import os
+import json
 import atexit
 from mailer import Mailer
 from datetime import datetime
@@ -17,13 +18,92 @@ db.init_app(app)
 
 
 def send_mail():
-    mailer = Mailer()
-    mailer.set_message(subject='Daily Testing Status Report',
-                       body='Test body.............')
-    recepients = ['capstoneg21@gmail.com']
-    mailer.send(recepients)
+    with app.app_context():
+        app_stats = get_app_stats()
+        body = ""
+        for app_stat in app_stats:
+            title = f"\t\t<h2>Statistics for App: {app_stat['app']}, Total Pass Percentage: {(app_stat['total_pass'] / (app_stat['total_pass'] + app_stat['total_fail'])) * 100:.2f}%</h2>\n" \
+                    f'\t\t<hr>\n'
+            body += title
+            for test in app_stat['tests']:
+                stats = f"\t\t<h3><strong>Test Name:</strong> {test['test_name']}</h3>\n" \
+                        f"\t\t<p>Test Type: {test['test_type']}</p>\n" \
+                        f"\t\t<p>Times Run: {test['times_run']}</p>\n" \
+                        "\t\t<p>Pass Percentage: {:.2f}%</p>\n".format((test['num_pass']/test['times_run']) * 100)
+                body += stats
+        mailer = Mailer()
+        mailer.set_message(subject='Daily Testing Status Report',
+                        body=body)
+        recepients = ['capstoneg21@gmail.com']
+        mailer.send(recepients)
 
+def get_app_stats():
+    """ Collect application statistics for an email update """
 
+    """ Step #1:
+        Collect all tests and gather any app, or test type information that pertains to them
+        Convert data from a list of tuples (each index holding a different model - 0: test, 1: app, 2: test type) 
+        into a dictionary that groups the data by app. The app name will serve as the key and its value will be a 
+        list of dictionaries, each dictionary holding test information for said app
+    """
+
+    data = db.session.query(Test, App, Test_Type).select_from(Test).join(App).join(Test_Type).all()
+
+    grouped_by_app = {}
+
+    for test, app, test_type in data:
+        # Each model can have its attributes prepared as a dictionary string 
+        # Using json.loads() convert the dictionary string to a dictionary
+        # Then, merge all dictionaries into one dictionary to remove overlapping attributes
+        collection = { **json.loads(str(test)), **json.loads(str(app)), **json.loads(str(test_type))}
+
+        # If this collection's app has not been set as a key in the dictionary grouping data by app, 
+        # add it as a key with it's value being an empty list first, then append the collection to said list
+        grouped_by_app.setdefault(collection['app'], []).append(collection)
+
+    """ Step #2:
+        Collect statistics for all apps, gather their app name, a list of test statistics, and a total number of passed/failed tests
+        For each app, retrieve the history of each of its pertaining tests - how many times each of its tests has ran, passed, and failed
+        Return these statistics to be used in an email update
+    """
+
+    # Create a list to hold dictionaries holding information for all of an app's test
+    all_app_statistics = [] 
+
+    for app, tests in grouped_by_app.items():
+        # Compute the statistics for each app
+        one_app_statistics = { 'app': app, 'tests': [], 'total_pass': 0, 'total_fail': 0 }
+
+        # For each apps tests, compute how many times it ran, passed, and failed, 
+        # and also track the total number of passed/failed tests for said app
+        for test in tests:
+            test_id, test_name, test_type = test['test_id'], test['test'], test['test_type']
+            # Query the database for the history of each test by ID
+            try:
+                test_results = Test_Run.query.filter_by(test_id=test_id).all()
+
+                num_pass, num_fail = 0, 0
+
+                for test_result in test_results:
+                    test_result = json.loads(str(test_result))
+
+                    if test_result['test_status'] == "pass":
+                        num_pass += 1
+                    elif test_result['test_status'] == "fail":
+                        num_fail +=1
+
+                # Record this app's statistics
+                one_app_statistics['tests'].append({ "test_name": test_name, "test_type": test_type, "times_run": len(test_results), "num_pass": num_pass, "num_fail": num_fail })
+                one_app_statistics['total_pass'] += num_pass
+                one_app_statistics['total_fail'] += num_fail
+            except Exception as e:
+                print(f"Error: {e}", flush=True)
+                print(f"Could not process query of database for Test_Run with ID: {test_id}.", flush=True)
+            
+        all_app_statistics.append(one_app_statistics)
+    
+    return all_app_statistics
+    
 # create schedule for mailing status report
 scheduler = BackgroundScheduler()
 scheduler.start()
@@ -351,6 +431,10 @@ def get_recent_tests():
     finally:
         db.session.close()
 
+@app.route('/test', methods=['GET'])
+def test():
+    data = get_app_stats()
+    return jsonify(data)
 
 @app.route('/')
 def home():
