@@ -2,7 +2,7 @@ import os
 import json
 import atexit
 from mailer import Mailer
-from datetime import datetime
+from datetime import datetime, timedelta
 from models import db, App, Test, Test_Type, Test_Run
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, render_template, request, jsonify, abort
@@ -378,14 +378,18 @@ def get_test_history_route():
 # element is the amount of tests run on that date.
 def get_test_frequencies(app):
     try:
-        print(f"app: {app}", flush=True)
+        date_of_two_weeks_ago = datetime.today() - timedelta(days=7)
+
         if(app):
-            return (True, db.session.query(db.func.cast(Test.entry_date, db.Date), db.func.count(db.func.cast(Test.entry_date, db.Date))).join(App)
-                    .filter(App.app == app).group_by(db.func.cast(Test.entry_date, db.Date)).all())
+            return (True, db.session.query(db.func.cast(Test_Run.entry_date, db.Date), db.func.count(db.func.cast(Test_Run.entry_date, db.Date))).join(Test).join(App)
+                    .filter(App.app == app, db.func.cast(Test_Run.entry_date, db.Date) >= db.func.cast(date_of_two_weeks_ago, db.Date))
+                    .group_by(db.func.cast(Test_Run.entry_date, db.Date)).all())
         else:
-            return (True, db.session.query(db.func.cast(Test.entry_date, db.Date), db.func.count(db.func.cast(Test.entry_date, db.Date))).join(App)
-                    .group_by(db.func.cast(Test.entry_date, db.Date)).all())
+            return (True, db.session.query(db.func.cast(Test_Run.entry_date, db.Date), db.func.count(db.func.cast(Test_Run.entry_date, db.Date))).join(Test).join(App)
+                    .filter(db.func.cast(Test_Run.entry_date, db.Date) >= db.func.cast(date_of_two_weeks_ago, db.Date))
+                    .group_by(db.func.cast(Test_Run.entry_date, db.Date)).all())
     except Exception as e:
+        print(f"error: {e}", flush=True)
         return (False,)
 
 

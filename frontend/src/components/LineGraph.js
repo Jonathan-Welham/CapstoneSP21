@@ -34,11 +34,11 @@ class LineGraph extends React.Component {
                     {
                         scaleLabel: {
                             display: true,
-                            labelString: 'number of tests'
+                            labelString: 'number of test runs'
                         },
                         ticks: {
                             min: 0,
-                            stepSize: 1
+                            stepSize: 5
                         }
                     }
                 ],
