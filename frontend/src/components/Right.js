@@ -95,7 +95,7 @@ class Right extends Component {
                                 <ScatterChart data={this.state["tests"]} />
                             </Paper>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs={12} className="data-table">
                             {/* Data Table */}
                             <MaterialTable
                                 title="Test Data"
@@ -126,12 +126,6 @@ class Right extends Component {
                                     }
                                 ]}
                             />
-                        </Grid>
-                        <Grid item xs={4}>
-                            {/* Graph 4 */}
-                            <Paper>
-                                Graph 4
-                        </Paper>
                         </Grid>
                     </Grid>
                 </Box>
