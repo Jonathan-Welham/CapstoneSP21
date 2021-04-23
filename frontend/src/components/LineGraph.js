@@ -1,5 +1,5 @@
 import React from 'react'
-import {Line} from 'react-chartjs-2'
+import { Line } from 'react-chartjs-2'
 
 class LineGraph extends React.Component {
     constructor(props) {
@@ -7,20 +7,22 @@ class LineGraph extends React.Component {
 
         this.state = {
             "data": [],
-            "labels": []
+            "labels": [],
+            "title": "Apps"
         }
     }
 
     componentDidMount() {
         this.setState({
             "data": this.props.data.data,
-            "labels": this.props.data.labels
+            "labels": this.props.data.labels,
+            "title": this.props.data.title
         });
     }
 
-    componentDidUpdate(prevProps, prevState){
-        if(prevProps.data !== this.props.data){
-            this.setState({"data": this.props.data.data, "labels": this.props.data.labels});
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.data !== this.props.data) {
+            this.setState({ "data": this.props.data.data, "labels": this.props.data.labels, "title": this.props.data.title });
         }
     }
 
@@ -30,19 +32,29 @@ class LineGraph extends React.Component {
             scales: {
                 yAxes: [
                     {
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'number of tests'
+                        },
                         ticks: {
                             min: 0,
-                            max: 10
+                            stepSize: 1
                         }
                     }
-                ]
+                ],
+                xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'dates (month/day)'
+                    }
+                  }]
             }
         }
 
         let data = {
             labels: this.state.labels,
             datasets: [{
-                label: '',
+                label: this.state.title ? this.state.title : "Apps",
                 fill: false,
                 lineTension: 0.5,
                 borderWidth: 2,
@@ -54,7 +66,7 @@ class LineGraph extends React.Component {
         return (
             <>
                 <div className='header'>
-                    <h1 className='title'>Test frequency</h1>
+                    <h1 className='title'>Test Frequency</h1>
                 </div>
                 <Line data={data} options={options} />
             </>
