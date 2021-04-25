@@ -35,7 +35,7 @@ class App extends Component{
 
     axios.get('/api/get-dashboard-info')
     .then(res => {
-      const tests = res.data.tests
+      const tests = res.data.tests.concat().reverse()
       const apps = res.data.apps
       this.setState({
         "allApplications": apps,

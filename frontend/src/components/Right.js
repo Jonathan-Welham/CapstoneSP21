@@ -45,7 +45,7 @@ class Right extends Component {
             console.log("else")
             axios.get('/api/query-tests?apply_filters=true&app=' + this.props.tests.chosenApp)
                 .then(res => {
-                    const data = res.data.query_results;
+                    const data = res.data.query_results.concat().reverse();
                     this.setState({ "tests": data, "chosenApp": this.props.tests.chosenApp });
                 });
 
