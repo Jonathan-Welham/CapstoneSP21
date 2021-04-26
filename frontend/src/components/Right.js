@@ -45,7 +45,7 @@ class Right extends Component {
             console.log("else")
             axios.get('/api/query-tests?apply_filters=true&app=' + this.props.tests.chosenApp)
                 .then(res => {
-                    const data = res.data.query_results.concat().reverse();
+                    const data = res.data.query_results.sort(this.comp).reverse();
                     this.setState({ "tests": data, "chosenApp": this.props.tests.chosenApp });
                 });
 
@@ -58,6 +58,10 @@ class Right extends Component {
             });
 
         }
+    }
+
+    comp(a, b){
+        return new Date(a.entry_date).getTime() - new Date(b.entry_date).getTime();
     }
 
     render() {

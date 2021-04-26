@@ -28,6 +28,10 @@ class App extends Component{
     this.setState({ 'chosenApp': temp });
   }
 
+  comp(a, b){
+    return new Date(a.entry_date).getTime() - new Date(b.entry_date).getTime();
+}
+
   // Once everything gets rendered this function gets called.
   // This function should call all tests for display on the table
   componentDidMount(){
@@ -35,7 +39,7 @@ class App extends Component{
 
     axios.get('/api/get-dashboard-info')
     .then(res => {
-      const tests = res.data.tests.concat().reverse()
+      const tests = res.data.tests.sort(this.comp).reverse();
       const apps = res.data.apps
       this.setState({
         "allApplications": apps,
