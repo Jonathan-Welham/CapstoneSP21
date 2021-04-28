@@ -14,7 +14,7 @@ class App(db.Model):
         self.app = app
     
     def __str__(self):
-        return f'{{ "app": "{self.app}", "appID": "{self.app_id}" }}'
+        return f'{{ "app": "{self.app}", "app_id": "{self.app_id}" }}'
 
 class Test_Type(db.Model):
     __tablename__ = 'Test_Type'
