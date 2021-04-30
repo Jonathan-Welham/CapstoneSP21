@@ -39,7 +39,7 @@ class App extends Component{
 
     axios.get('/api/get-dashboard-info')
     .then(res => {
-      const tests = res.data.tests.sort(this.comp).reverse();
+      const tests = res.data.tests //.sort(this.comp).reverse();
       const apps = res.data.apps
       this.setState({
         "allApplications": apps,
