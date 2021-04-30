@@ -8,10 +8,13 @@ import axios from 'axios'
 
 class App extends Component{
 
+  /*
+    We treat constructor as a default constructor.
+    Constructor only gets called once per component mount
+  */
   constructor(props){
-    super(props);
-
     console.log("App: Constructor");
+    super(props);
     this.state = {
         "allApplications": [],
         "tests": [],
@@ -20,7 +23,11 @@ class App extends Component{
     this.getResults = this.getResults.bind(this);
   }
 
-  // GET test results for clicked suite
+  /** 
+   * Helper function to set the new data from the clicked even
+   * @param e Event (Object)
+   * @returns New state which re-renders child components and new data from desired click event 
+  */
   getResults(e){
     console.log("App: getResults");
     console.log(e.currentTarget.value)
@@ -28,15 +35,20 @@ class App extends Component{
     this.setState({ 'chosenApp': temp });
   }
 
+  /**
+   * 
+   * @param a First index of an array 
+   * @param b Second index of an array
+   * @returns Array which is sorted by date
+   */
   comp(a, b){
     return new Date(a.entry_date).getTime() - new Date(b.entry_date).getTime();
-}
+  }
 
   // Once everything gets rendered this function gets called.
   // This function should call all tests for display on the table
   componentDidMount(){
     console.log("App: componentDidMount");
-
     axios.get('/api/get-dashboard-info')
     .then(res => {
       const tests = res.data.tests.sort(this.comp).reverse();
@@ -50,7 +62,6 @@ class App extends Component{
         }
       });
     })
-
   }
 
 render(){
