@@ -27,13 +27,15 @@ def send_mail():
                 stats = f"\t\t<h3><strong>Test Name:</strong> {test['test_name']}</h3>\n" \
                         f"\t\t<p>Test Type: {test['test_type']}</p>\n" \
                         f"\t\t<p>Times Run: {test['times_run']}</p>\n" \
-                        "\t\t<p>Pass Percentage: {:.2f}%</p>\n".format((test['num_pass']/test['times_run']) * 100)
+                        "\t\t<p>Pass Percentage: {:.2f}%</p>\n".format(
+                            (test['num_pass']/test['times_run']) * 100)
                 body += stats
         mailer = Mailer()
         mailer.set_message(subject='Daily Testing Status Report',
-                        body=body)
+                           body=body)
         recepients = ['capstoneg21@gmail.com']
         mailer.send(recepients)
+
 
 def get_app_stats():
     """ Collect application statistics for an email update """
@@ -45,17 +47,19 @@ def get_app_stats():
         list of dictionaries, each dictionary holding test information for said app
     """
 
-    data = db.session.query(Test, App, Test_Type).select_from(Test).join(App).join(Test_Type).all()
+    data = db.session.query(Test, App, Test_Type).select_from(
+        Test).join(App).join(Test_Type).all()
 
     grouped_by_app = {}
 
     for test, app, test_type in data:
-        # Each model can have its attributes prepared as a dictionary string 
+        # Each model can have its attributes prepared as a dictionary string
         # Using json.loads() convert the dictionary string to a dictionary
         # Then, merge all dictionaries into one dictionary to remove overlapping attributes
-        collection = { **json.loads(str(test)), **json.loads(str(app)), **json.loads(str(test_type))}
+        collection = {
+            **json.loads(str(test)), **json.loads(str(app)), **json.loads(str(test_type))}
 
-        # If this collection's app has not been set as a key in the dictionary grouping data by app, 
+        # If this collection's app has not been set as a key in the dictionary grouping data by app,
         # add it as a key with it's value being an empty list first, then append the collection to said list
         grouped_by_app.setdefault(collection['app'], []).append(collection)
 
@@ -66,13 +70,14 @@ def get_app_stats():
     """
 
     # Create a list to hold dictionaries holding information for all of an app's test
-    all_app_statistics = [] 
+    all_app_statistics = []
 
     for app, tests in grouped_by_app.items():
         # Compute the statistics for each app
-        one_app_statistics = { 'app': app, 'tests': [], 'total_pass': 0, 'total_fail': 0 }
+        one_app_statistics = {'app': app, 'tests': [],
+                              'total_pass': 0, 'total_fail': 0}
 
-        # For each apps tests, compute how many times it ran, passed, and failed, 
+        # For each apps tests, compute how many times it ran, passed, and failed,
         # and also track the total number of passed/failed tests for said app
         for test in tests:
             test_id, test_name, test_type = test['test_id'], test['test'], test['test_type']
@@ -88,20 +93,22 @@ def get_app_stats():
                     if test_result['test_status'] == "pass":
                         num_pass += 1
                     elif test_result['test_status'] == "fail":
-                        num_fail +=1
+                        num_fail += 1
 
                 # Record this app's statistics
-                one_app_statistics['tests'].append({ "test_name": test_name, "test_type": test_type, "times_run": len(test_results), "num_pass": num_pass, "num_fail": num_fail })
+                one_app_statistics['tests'].append({"test_name": test_name, "test_type": test_type, "times_run": len(
+                    test_results), "num_pass": num_pass, "num_fail": num_fail})
                 one_app_statistics['total_pass'] += num_pass
                 one_app_statistics['total_fail'] += num_fail
             except Exception as e:
                 print(f"Error: {e}", flush=True)
-                print(f"Could not process query of database for Test_Run with ID: {test_id}.", flush=True)
-            
+                print(
+                    f"Could not process query of database for Test_Run with ID: {test_id}.", flush=True)
+
         all_app_statistics.append(one_app_statistics)
-    
+
     return all_app_statistics
-    
+
 # Create schedule for mailing status report
 scheduler = BackgroundScheduler()
 scheduler.start()
@@ -223,7 +230,7 @@ def get_tests():
     if not apply_filters:
         try:
             raw_results = db.session.query(Test, App, Test_Type).select_from(
-                Test).join(App).join(Test_Type).all()
+                Test).join(App).join(Test_Type).order_by(Test.test_status.asc(), Test.entry_date.desc()).all()
             query_results = list(map(lambda result: {**{'app': result[1].app, 'test_type': result[2].test_type}, **{
                                  c.name: str(getattr(result[0], c.name)) for c in result[0].__table__.columns}}, raw_results))
             return jsonify({'success': True, 'message': 'Query processed', 'query_results': query_results}), 200
@@ -275,7 +282,7 @@ def get_tests():
     # Get tests using all processed filters
     try:
         raw_results = db.session.query(Test, App, Test_Type).select_from(
-            Test).filter_by(**test_query_pairs).join(App).join(Test_Type).all()
+            Test).filter_by(**test_query_pairs).join(App).join(Test_Type).order_by(Test.test_status.asc(), Test.entry_date.desc()).all()
         query_results = list(map(lambda result: {**{'app': result[1].app, 'test_type': result[2].test_type}, **{
                              c.name: str(getattr(result[0], c.name)) for c in result[0].__table__.columns}}, raw_results))
         return jsonify({'success': True, 'message': 'Query processed', 'query_results': query_results}), 200
@@ -351,16 +358,18 @@ def get_test_history_route():
             try:
                 # Retrieves the test run history for a specific test by test id
                 tests = db.session.query(Test_Run.test_id, Test_Run.entry_date, Test_Run.execution_time,
-                                         Test_Run.test_status).filter(Test_Run.test_id == test_id).all()
+                                         Test_Run.test_status).filter(Test_Run.test_id == test_id).order_by(Test_Run.entry_date.desc()).all()
 
-                output = []
-                for test in tests:
-                    output.append({
+                # format it into a form that the frontend can use
+                output = [
+                    {
                         "test_id": test[0],
                         "entry_date": test[1],
                         "execution_time": test[2],
                         "test_status": test[3]
-                    })
+                    }
+                    for test in tests
+                ]
 
                 return jsonify(output)
             except Exception as e:
@@ -379,7 +388,7 @@ def get_test_history_route():
 # element is the amount of tests run on that date.
 def get_test_frequencies(app):
     try:
-        date_of_two_weeks_ago = datetime.today() - timedelta(days=7)
+        date_of_two_weeks_ago = datetime.today() - timedelta(days=14)
 
         if(app):
             return (True, db.session.query(db.func.cast(Test_Run.entry_date, db.Date), db.func.count(db.func.cast(Test_Run.entry_date, db.Date))).join(Test).join(App)
@@ -418,9 +427,9 @@ def get_recent_tests():
 
     try:
         tests = db.session.query(
-            *args).join(App).join(Test_Type).order_by(Test.entry_date).limit(50).all()
-        output = []
+            *args).join(App).join(Test_Type).order_by(Test.test_status.asc(), Test.entry_date.desc()).all()
 
+        output = []
         # convert tests from an array format to an array of jsons
         for test in tests:
             temp = {}
@@ -435,7 +444,6 @@ def get_recent_tests():
         return (False,)
     finally:
         db.session.close()
-
 
 @app.route('/')
 def home():
@@ -453,6 +461,8 @@ def home():
         2. >>> from models import db      
         3. >>> db.create_all(app=create_app())
 """
+
+
 def create_app():
     app = Flask(__name__, static_url_path='',
                 static_folder='./build', template_folder='./build')
