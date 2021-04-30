@@ -69,7 +69,6 @@ class Mailer:
 		self.message.set_content(body)
 
 		# Body as html, falls back to the former if receiver has html mail disabled
-		# TODO: Set html message with actually relevant info.
 		self.message.add_alternative(
 			f'<!DOCTYPE html>\n'
 			f'<html>\n'

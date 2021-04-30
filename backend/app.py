@@ -7,15 +7,13 @@ from models import db, App, Test, Test_Type, Test_Run
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, render_template, request, jsonify, abort
 
-app = Flask(__name__, static_url_path='',
-            static_folder='./build', template_folder='./build')
+app = Flask(__name__, static_url_path='', static_folder='./build', template_folder='./build')
 
 # SQLAlchemy configurations
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', "")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
-
 
 def send_mail():
     with app.app_context():
@@ -111,8 +109,7 @@ def get_app_stats():
 
     return all_app_statistics
 
-
-# create schedule for mailing status report
+# Create schedule for mailing status report
 scheduler = BackgroundScheduler()
 scheduler.start()
 
@@ -225,6 +222,9 @@ def post_tests():
 
 @app.route('/api/query-tests', methods=['GET'])
 def get_tests():
+    if request.method != "GET":
+        abort(404)
+
     # Query tests without any filters
     apply_filters = request.args['apply_filters'] if 'apply_filters' in request.args else False
     if not apply_filters:
@@ -233,9 +233,9 @@ def get_tests():
                 Test).join(App).join(Test_Type).order_by(Test.test_status.asc(), Test.entry_date.desc()).all()
             query_results = list(map(lambda result: {**{'app': result[1].app, 'test_type': result[2].test_type}, **{
                                  c.name: str(getattr(result[0], c.name)) for c in result[0].__table__.columns}}, raw_results))
-            return jsonify({'success': True, 'message': 'Query processed', 'query_results': query_results})
+            return jsonify({'success': True, 'message': 'Query processed', 'query_results': query_results}), 200
         except:
-            return jsonify({'success': False, 'message': 'Error processing query'})
+            return jsonify({'success': False, 'message': 'Error processing query'}), 400
 
     # Make a dictionary of attr. to filter tests by after validating keys from query
     test_query_pairs = {key: value for key,
@@ -260,11 +260,11 @@ def get_tests():
         try:
             app_result = App.query.filter_by(app=app_name).first()
             if app_result is None:
-                return jsonify({'success': False, 'message': f'No app with matching name: {app_name}'})
+                return jsonify({'success': False, 'message': f'No app with matching name: {app_name}'}), 400
             app_id = app_result.app_id
             test_query_pairs['app_id'] = app_id
         except:
-            return jsonify({'success': False, 'message': f'Error processing query searching for application with matching name: {app_name}'})
+            return jsonify({'success': False, 'message': f'Error processing query searching for application with matching name: {app_name}'}), 400
 
     # Get test type ID if query arg for test type is present, then insert into test_query_pairs
     test_type = request.args['test_type'] if 'test_type' in request.args else None
@@ -273,11 +273,11 @@ def get_tests():
             test_type_result = Test_Type.query.filter_by(
                 test_type=test_type).first()
             if test_type_result is None:
-                return jsonify({'success': False, 'message': f'No test type with matching name: {test_type}'})
+                return jsonify({'success': False, 'message': f'No test type with matching name: {test_type}'}), 400
             test_type_id = test_type_result.test_type_id
             test_query_pairs['test_type_id'] = test_type_id
         except:
-            return jsonify({'success': False, 'message': f'Error processing query searching for test type with matching name: {test_type}'})
+            return jsonify({'success': False, 'message': f'Error processing query searching for test type with matching name: {test_type}'}), 400
 
     # Get tests using all processed filters
     try:
@@ -285,9 +285,9 @@ def get_tests():
             Test).filter_by(**test_query_pairs).join(App).join(Test_Type).order_by(Test.test_status.asc(), Test.entry_date.desc()).all()
         query_results = list(map(lambda result: {**{'app': result[1].app, 'test_type': result[2].test_type}, **{
                              c.name: str(getattr(result[0], c.name)) for c in result[0].__table__.columns}}, raw_results))
-        return jsonify({'success': True, 'message': 'Query processed', 'query_results': query_results})
+        return jsonify({'success': True, 'message': 'Query processed', 'query_results': query_results}), 200
     except:
-        return jsonify({'success': False, 'message': 'Error processing query'})
+        return jsonify({'success': False, 'message': 'Error processing query'}), 400
 
 
 @app.route('/api/get-dashboard-info', methods=['GET'])
@@ -445,13 +445,6 @@ def get_recent_tests():
     finally:
         db.session.close()
 
-
-@app.route('/test', methods=['GET'])
-def test():
-    data = get_app_stats()
-    return jsonify(data)
-
-
 @app.route('/')
 def home():
     return render_template("index.html")
@@ -484,4 +477,3 @@ def create_app():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-    # app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
