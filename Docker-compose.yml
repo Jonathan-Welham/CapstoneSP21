@@ -1,4 +1,6 @@
+# web is the service name
 web:
+  # Below is where we set environment variables
   environment: 
     - DB_USER=$DB_USER
     - DB_PASSWORD=$DB_PASSWORD
@@ -9,8 +11,9 @@ web:
     - MAIL_SERVER=$MAIL_SERVER
     - EMAIL_ADDRESS=$EMAIL_ADDRESS
     - EMAIL_PASSWORD=$EMAIL_PASSWORD
+    
+  # build <dockerfile> (The dot operator indicates "this location")
   build: .
+  # Port entrypoint "hostPort:containerPort"
   ports:
    - "5000:5000"
-  # volumes:
-  #  - ./backend:/app/backend

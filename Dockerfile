@@ -1,12 +1,15 @@
-# Spin up the frontend and build it into static files
+# FROM - Grab the latest node image and set it as a variable
 FROM node:latest as build
-WORKDIR /app/frontend
-COPY ./frontend ./
-RUN npm install -g npm@7.10.0
-# RUN npm run server
 
+# WORKDIR - Tells us where the directory inside the docker container we will be working in
+WORKDIR /app/frontend
+
+# COPY - Copy HOST location -> Container location
+COPY ./frontend ./
+
+# Installs npm and builds our application into production code
+RUN npm install -g npm@7.10.0
 RUN npm run build
-# CMD ["npm start"]
 
 # Create the backend image 
 FROM python:3.7
