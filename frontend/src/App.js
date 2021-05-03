@@ -36,22 +36,18 @@ class App extends Component{
   }
 
   /**
-   * 
-   * @param a First index of an array 
-   * @param b Second index of an array
-   * @returns Array which is sorted by date
+   *  Once everything gets rendered this function gets called.
+   *  This function should call a GET route from the backend to return all test data.
+   *  The approach: 
+   *    1. GET the data from the backend
+   *    2. set the state to the returned data
+   *    NOTE: setState will cause a re-render 
    */
-  comp(a, b){
-    return new Date(a.entry_date).getTime() - new Date(b.entry_date).getTime();
-  }
-
-  // Once everything gets rendered this function gets called.
-  // This function should call all tests for display on the table
   componentDidMount(){
     console.log("App: componentDidMount");
     axios.get('/api/get-dashboard-info')
     .then(res => {
-      const tests = res.data.tests //.sort(this.comp).reverse();
+      const tests = res.data.tests
       const apps = res.data.apps
       this.setState({
         "allApplications": apps,
@@ -64,6 +60,7 @@ class App extends Component{
     })
   }
 
+
 render(){
   console.log("App: Render");
 
@@ -74,16 +71,20 @@ render(){
   return (
     <div style={entityStyle}>
       <Box height={1} display="flex" border={1}>
-       <Left className="left-layout" apps={apps} getResults={this.getResults}/> 
+        <Left className="left-layout" apps={apps} getResults={this.getResults}/> 
+        
+        {/* Conditional rendering below says if our requested data is empty then we render a different component */}
         {t.length > 0 
           ? <Right tests={tests} testFrequencies={this.state.testFrequencies}/>
           : <h1>Loading data</h1>
         }
-        </Box>
+        
+      </Box>
     </div>
   )}
 }
 
+// Below is JSX style; like CSS except we initialize inside the file that uses it
 const entityStyle = {
   height: "100%",
   backgroundColor: 'black'
