@@ -21,13 +21,17 @@ const useStyles = makeStyles((theme) => ({
 const Left = ({ apps, getResults }) => { 
 
     const classes = useStyles();
+
+    const refreshPage = ()=>{
+        window.location.reload();
+    }
     
     return (
         <Box className="left-box">
             <FormControl variant="outlined" className={classes.formControl}>
                 <InputLabel htmlFor="outlined-age-native-simple">Apps</InputLabel>
                 <Select className="app-select" >
-                    <option aria-label="None" value="" />
+                    <option aria-label="None" value="APPS" onClick={refreshPage}>APPS</option>
                     {/* Buttons will be dynamically created for how many applications there are */}
                     {apps.map((app) => (
                         <option value={app.app} key={app.app} onClick={getResults}>{app.app}</option>
@@ -49,7 +53,6 @@ const leftStyle = {
     flexDirection: 'column',
     justifyContent: "center",
 
-    25: onClick={getResults}
 }*/
 
 export default Left
