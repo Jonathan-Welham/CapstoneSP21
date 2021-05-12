@@ -1,7 +1,5 @@
-//import { Component, React } from 'react'
-import { Box, Button } from '@material-ui/core'
-// import { height } from '@material-ui/system'
-//import AppsRoundedIcon from '@material-ui/icons/AppsRounded';
+
+import { Box } from '@material-ui/core'
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
@@ -29,6 +27,7 @@ const Left = ({ apps, getResults }) => {
                 <Select className="app-select" >
                     <option aria-label="None" value="" />
                     {/* Buttons will be dynamically created for how many applications there are */}
+
                     {apps.map((app) => (
                         <option value={app.app} key={app.app} onClick={getResults}>{app.app}</option>
                     ))}
