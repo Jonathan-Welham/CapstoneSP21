@@ -127,7 +127,7 @@ scheduler.add_job(
 # Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())
 
-
+# endpoint that accepts test data provided in json format
 @app.route('/api/post-tests', methods=['POST'])
 def post_tests():
     if request.method == "POST":
@@ -289,7 +289,7 @@ def get_tests():
     except:
         return jsonify({'success': False, 'message': 'Error processing query'}), 400
 
-
+# end point that retrieves the intial information needed for the dashboard when it is first loaded (or refreshed)
 @app.route('/api/get-dashboard-info', methods=['GET'])
 def get_dashboard_info():
     if request.method == "GET":
@@ -306,6 +306,7 @@ def get_dashboard_info():
             entries = test_frequencies[1]
             output["test_frequencies"] = {"dates": [], "counts": []}
 
+            # formats the test frequencies in the output into an array of dates (month/day) and corresponding count of tests for a given date
             for entry in entries:
                 output["test_frequencies"]["dates"].append(
                     str(entry[0].month) + "/" + str(entry[0].day))
@@ -315,18 +316,19 @@ def get_dashboard_info():
     else:
         abort(404)
 
-
+# end point that retrieves test frequencies for a specific app if an app name is given, or all apps if no app name is given
 @app.route('/api/get-test-frequencies', methods=['GET'])
 def get_test_frequencies_route():
     if request.method == "GET":
         entries = None
-
+        # if an app name can be found in the request arguments get the test frequencies for the specific app
         if(request.args and request.args['app']):
             temp = get_test_frequencies(request.args['app'])
             if(temp[0]):
                 entries = temp[1]
             else:
                 return jsonify({"success": False, "message": "invalid query"}), 400
+        # no app name was found in the request arguments so get the test frequencies of all apps
         else:
             temp = get_test_frequencies(None)
             if(temp[0]):
@@ -338,6 +340,7 @@ def get_test_frequencies_route():
             return jsonify({"success": False, "message": "invalid query"}), 400
 
         output = {"success": True, "counts": [], "dates": []}
+        # formats the test frequencies in the output into an array of dates (month/day) and corresponding count of tests for a given date.
         for entry in entries:
             output["dates"].append(
                 str(entry[0].month) + "/" + str(entry[0].day))
@@ -384,12 +387,15 @@ def get_test_history_route():
 
 
 # Returns the test frequencies for a specific app, or if given no app returns test frequencies for all apps.
-# The data is returned as a array of tuples where the first element in each tuple is the date and the second
-# element is the amount of tests run on that date.
+# The data is returned as a tuple containing two parts. The first element in the tuple determines whether
+# the query to the database was successful, and the second is an array of tuples where the first element in
+# each tuple is the date and the second element is the amount of tests run on that date.
 def get_test_frequencies(app):
     try:
+        # limit the results to be within the last two weeks
         date_of_two_weeks_ago = datetime.today() - timedelta(days=14)
-
+        
+        # if there is an app get only the tests for the app
         if(app):
             return (True, db.session.query(db.func.cast(Test_Run.entry_date, db.Date), db.func.count(db.func.cast(Test_Run.entry_date, db.Date))).join(Test).join(App)
                     .filter(App.app == app, db.func.cast(Test_Run.entry_date, db.Date) >= db.func.cast(date_of_two_weeks_ago, db.Date))
@@ -420,8 +426,10 @@ def get_apps():
 # returns the most recent rows of tests as an array of jsons containing test id, app name, test type, test, execution time,
 # entry date, test status, and times run in this order.
 def get_recent_tests():
+    # columns we want to retrieve from the database
     args = (Test.test_id, App.app, Test_Type.test_type, Test.test, Test.execution_time,
             Test.entry_date, Test.test_status, Test.times_run)
+    # string names of the columns we want from the database
     args_to_string = ["test_id", "app", "test_type", "test",
                       "execution_time", "entry_date", "test_status", "times_run"]
 
