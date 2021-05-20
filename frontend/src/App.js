@@ -64,18 +64,16 @@ class App extends Component{
 render(){
   console.log("App: Render");
 
-  const tests = this.state;
-  const t = this.state.tests;
-  const apps = this.state.allApplications;
+  const currentAppList = this.state.allApplications;
   
   return (
     <div style={entityStyle}>
       <Box height={1} display="flex" border={1}>
-        <Left className="left-layout" apps={apps} getResults={this.getResults}/> 
+        <Left className="left-layout" apps={currentAppList} getResults={this.getResults}/> 
         
         {/* Conditional rendering below says if our requested data is empty then we render a different component */}
-        {t.length > 0 
-          ? <Right tests={tests} testFrequencies={this.state.testFrequencies}/>
+        {this.state.tests.length > 0 
+          ? <Right tests={this.state} testFrequencies={this.state.testFrequencies}/>
           : <h1>Loading data</h1>
         }
         
