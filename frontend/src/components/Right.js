@@ -130,7 +130,7 @@ class Right extends Component {
                         </Grid>
                     </Grid>
                 </Box>
-                <Modal show={this.state.isOpen} onHide={this.closeModal} centered={true}>
+                <Modal show={this.state.isOpen} onHide={this.closeModal} centered={true} size="lg">
                     <Modal.Header closeButton>
                         <Modal.Title>
                             {   
