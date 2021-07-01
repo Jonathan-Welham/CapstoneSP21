@@ -1,3 +1,5 @@
+# These files are not added to our docker container
+
 node_modules
 .ps1
 .sh
